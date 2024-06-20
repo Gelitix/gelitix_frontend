@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google"
-import { cn } from "@/lib/utils"
+import { Poppins as FontSans } from "next/font/google";
+import { cn } from "@/lib/utils";
 import "./globals.css";
-
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,7 +27,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        ...
+        {children}
       </body>
     </html>
   );
