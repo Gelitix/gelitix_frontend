@@ -248,7 +248,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex gap-4 items-center md:justify-between mt-6 mb-24">
+        <div className="flex gap-4 items-center md:justify-between mt-6 mb-12 md:mb-18">
           <p className="text-[12px] md:text-[12px]">
             &copy; 2011-2024 PT. Global Tiket Network. All Rights Reserved.
           </p>
