@@ -13,7 +13,7 @@ export const Hero = () => {
     <section className="mb-8">
       <div className="md:h-[576px] h-[175px] bg-cover bg-[url('/landingpage/hero.webp')] md:px-[230px] items-center text-center pt-[70px] md:pt-[180px]">
         <h1 className="text-white text-[20px] md:text-[35px]">
-          Hey there, <span className="font-bold">going somewhere?</span>
+          Hey there, <span className="font-semibold">going somewhere?</span>
         </h1>
         <div className="">
           <input
