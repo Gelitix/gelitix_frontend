@@ -14,12 +14,12 @@ const profile = () => {
   return (
     <section className="bg-[#f4f7fe] md:pt-20">
       <Image src={mobilehero} alt="mobilehero.webp" className="md:hidden" />
-      <h1 className="md:hidden px-5 font-semibold text-[22px] mb-4 text-white md:relative absolute top-20 ">
+      <h1 className="md:hidden px-5 font-semibold text-[22px] mb-4 text-white md:relative absolute top-20 md:top-0 ">
         Account
       </h1>
       <div className="md:grid gap-5 grid-cols-7 mx-4 md:mx-72 ">
-        <div className="col-span-2 -mt-10 relative z-50">
-          <div className="md:relative md:w-full md:top-0 top-[120px] flex flex-col gap-1 md:gap-3 bg-white p-6  rounded-t-2xl h-fit mb-[6px]">
+        <div className="col-span-2 -mt-10 md:mt-0 relative md:static z-50">
+          <div className=" md:top-0 top-[120px] flex flex-col gap-1 md:gap-3 bg-white p-6  rounded-t-2xl h-fit mb-[6px]">
             <div className="flex items-center gap-2 md:justify-between">
               <p className="font-semibold text-[18px] md:text-[22px]">
                 Hizkia Sihombing

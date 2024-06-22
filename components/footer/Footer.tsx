@@ -19,7 +19,7 @@ import bliblitiket from "@/public/footer/bliblitiket.png";
 const Footer = () => {
   return (
     <section>
-      <div className="border-solid border-b-[1px] border-gray-300 mt-4"></div>
+      <div className="border-solid border-b-[1px] border-gray-300"></div>
       <div className="mx-[16px] md:mx-[230px]  mt-4">
         <div className=" md:flex md:justify-between items-start md:border-solid md:border-b-[1px] md:pb-6">
           <div>
