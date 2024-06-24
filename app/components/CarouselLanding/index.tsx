@@ -17,7 +17,7 @@ import { Calendar } from "lucide-react";
 
 const CarouselLanding = () => {
   const plugin = React.useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true })
+    Autoplay({ delay: 2000, stopOnInteraction: false, stopOnMouseEnter: true })
   );
 
   return (
