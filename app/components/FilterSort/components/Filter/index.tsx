@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ui/Alert-dialog";
 import { FilterIcon } from "lucide-react";
 import Image from "next/image";
 import seminar from "@/public/landingpage/icons/icons8-training-100 (1).png";
