@@ -5,7 +5,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/components/ui/Carousel";
 import banner1 from "@/public/landingpage/Carousel/1.jpg";
 import banner2 from "@/public/landingpage/Carousel/2.png";
 import banner3 from "@/public/landingpage/Carousel/3.png";

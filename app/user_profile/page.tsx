@@ -1,5 +1,5 @@
 import React from "react";
-import Footer from "@/components/footer/Footer";
+import Footer from "@/components/Footer/Footer";
 import { Verified } from "lucide-react";
 import { CircleUserIcon } from "lucide-react";
 import defaultprofilepic from "@/public/userprofile/defaultprofile.webp";

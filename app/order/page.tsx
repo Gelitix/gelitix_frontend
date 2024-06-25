@@ -2,7 +2,7 @@ import React from "react";
 import PersonalInformation from "./components/PersonalInformation";
 import TotalPrice from "./components/TotalPrice";
 import OrderForm from "./components/OrderForm";
-import Footer from "@/components/footer/Footer";
+import Footer from "@/components/Footer/Footer";
 
 const page = () => {
   return (
