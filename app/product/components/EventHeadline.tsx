@@ -1,10 +1,10 @@
 import React from "react";
 import Location from "../../../components/Icons/Location";
 
-import Label from "../../../components/Labels/Label";
-import PackageCard from "./PackageCard";
-import EventInfo from "../../../../components/EventInfo";
+import PackageCard from "@/app/product/components/PackageCard";
+import EventInfo from "@/app/product/components/EventInfo";
 import { Calendar } from "lucide-react";
+import Label from "@/components/Labels/Label";
 
 const EventHeadline = () => {
   return (
