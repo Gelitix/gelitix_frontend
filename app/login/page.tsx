@@ -23,7 +23,7 @@ const page: React.FC = () => {
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
       <Image
-        src="/login.png"
+        src="/login/login.png"
         fill
         style={{ objectFit: "cover" }}
         alt="Login Cover"

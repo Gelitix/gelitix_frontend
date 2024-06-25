@@ -27,7 +27,11 @@ const NavBar: React.FC = () => {
         />
       </div>
       <div className="hidden md:flex items-center space-x-6">
-        <img src="/handshake.png" alt="Indonesia Flag" className="h-4 w-6" />
+        <img
+          src="/navbar/handshake.png"
+          alt="Indonesia Flag"
+          className="h-4 w-6"
+        />
         <a href="#" className="text-gray-600 hover:text-gray-800">
           Jadi Partner tiket.com
         </a>
@@ -37,7 +41,7 @@ const NavBar: React.FC = () => {
         <div className="flex items-center space-x-1">
           <span className="text-gray-600">IDR</span>
           <img
-            src="/indonesia-flag.png"
+            src="/navbar/indonesia-flag.png"
             alt="Indonesia Flag"
             className="h-4 w-6"
           />
