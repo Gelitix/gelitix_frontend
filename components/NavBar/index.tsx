@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
+
+import { BellRing, Mail, MailPlus } from "lucide-react";
 
 const NavBar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -43,13 +44,7 @@ const NavBar: React.FC = () => {
         </div>
         <div className="relative">
           <button className="relative text-gray-600 hover:text-gray-800">
-            <img
-              src="/mail.png"
-              alt="Mail"
-              className="h-4 w-6"
-              height={250}
-              width={100}
-            />
+            <MailPlus />
           </button>
         </div>
         <div className="relative">
