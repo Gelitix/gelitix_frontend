@@ -35,7 +35,7 @@ const PersonalInformation = ({
         Contact Details
       </h1>
       <p className="text-xs md:text-sm text-gray-400 mb-3">
-        Fill in this form correctly. We'll send the e-ticket to the email
+        Fill in this form correctly. We&apos;ll send the e-ticket to the email
         address as declared on this page.
       </p>
 
@@ -188,7 +188,7 @@ const PersonalInformation = ({
             <Award></Award>
             <p>
               {" "}
-              You're one step closer to get{" "}
+              You&apos;re one step closer to get{" "}
               <span className="font-semibold">Lowest Price Guarantee</span>
             </p>
           </div>
