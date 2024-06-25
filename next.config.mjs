@@ -12,6 +12,16 @@ const nextConfig = {
         hostname: "assets-bucket.tiket.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+        pathname: "/f/*",
+      },
     ],
   },
 };
