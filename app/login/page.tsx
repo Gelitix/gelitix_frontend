@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 
-const page: React.FC = () => {
+const LoginPage: React.FC = () => {
   const initialValues = {
     email: "",
     password: "",
@@ -31,16 +31,12 @@ const page: React.FC = () => {
       />
       <div className="relative z-10 flex items-center justify-center min-h-screen">
         <div className="max-w-screen-xl px-6 md:px-10">
-          {" "}
-          {/* Adjusted max-width and padding */}
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
             <Form className="mx-auto max-w-2xl rounded-lg border bg-white bg-opacity-90 p-6 md:p-10">
-              {" "}
-              {/* Adjusted max-width and padding */}
               <div className="flex flex-col gap-4">
                 <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl">
                   Login
@@ -94,7 +90,7 @@ const page: React.FC = () => {
               </div>
               <div className="flex items-center justify-center bg-gray-100 p-4 mt-4 rounded-b-lg">
                 <p className="text-center text-sm text-gray-500">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <a
                     href="register"
                     className="text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700"
@@ -111,4 +107,4 @@ const page: React.FC = () => {
   );
 };
 
-export default page;
+export default LoginPage;

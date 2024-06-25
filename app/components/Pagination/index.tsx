@@ -7,7 +7,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/Pagination";
+} from "@/components/ui/pagination";
 
 const Pagin = () => {
   return (

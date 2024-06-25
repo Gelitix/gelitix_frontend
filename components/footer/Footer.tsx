@@ -171,7 +171,7 @@ const Footer = () => {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 320 512"
                 height="2.5em"
                 width="2.5em"
@@ -184,7 +184,7 @@ const Footer = () => {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 1024 1024"
                 height="2.5em"
                 width="2.5em"
@@ -197,7 +197,7 @@ const Footer = () => {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 1024 1024"
                 height="2.5em"
                 width="2.5em"
@@ -209,7 +209,7 @@ const Footer = () => {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 1024 1024"
                 height="2.5em"
                 width="2.5em"
@@ -221,7 +221,7 @@ const Footer = () => {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 1024 1024"
                 height="2.5em"
                 width="2.5em"
@@ -233,7 +233,7 @@ const Footer = () => {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 role="img"
                 viewBox="0 0 24 24"
                 height="2.5em"

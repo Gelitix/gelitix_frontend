@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/Alert-dialog";
+} from "@/components/ui/alert-dialog";
 import { FilterIcon } from "lucide-react";
 import Image from "next/image";
 import seminar from "@/public/landingpage/icons/icons8-training-100 (1).png";
@@ -37,7 +37,7 @@ const Filter = () => {
                 <svg
                   stroke="currentColor"
                   fill="currentColor"
-                  stroke-width="0"
+                  strokeWidth="0"
                   viewBox="0 0 1024 1024"
                   height="1em"
                   width="1em"

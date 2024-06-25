@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import ImageUpload from "@/app/dashboard/components/ImageUpload";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 interface EventFormValues {
   eventName: string;
