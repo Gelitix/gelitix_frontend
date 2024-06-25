@@ -197,7 +197,7 @@ export const Hero = () => {
               Welcome gift for new users! 🥳🎁
             </p>
             <p className="text-lg text-gray-500 hidden md:block">
-              New here? We&#39re thrilled to have you! Register today and
+              New here? We &#39; re thrilled to have you! Register today and
               receive an exclusive 20% discount on your first order.
             </p>
           </div>
