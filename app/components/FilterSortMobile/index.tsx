@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Filter from "./components/Filter";
 import { Sort } from "./components/Sort";
 
-const Dashboard = () => {
+const FilterSortMobile = () => {
   const [visibleContent, setVisibleContent] = useState<string | null>(null);
 
   const showContent = (content: string) => {
@@ -64,4 +64,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default FilterSortMobile;

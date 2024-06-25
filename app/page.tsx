@@ -3,7 +3,7 @@ import React from "react";
 import Footer from "@/components/footer/Footer";
 import { Hero } from "./components/Hero";
 import Cards from "./components/Cards";
-import Dashboard from "./components/Dashboard";
+import FilterSortMobile from "./components/FilterSortMobile";
 import CarouselLanding from "./components/CarouselLanding";
 import Pagination from "./components/Pagination";
 import FilterSort from "./components/FilterSort";
@@ -17,7 +17,7 @@ const page = () => {
       <Cards />
       <Pagination />
       <Footer />
-      <Dashboard />
+      <FilterSortMobile />
     </section>
   );
 };
