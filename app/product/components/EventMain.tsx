@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/BreadCrumb";
+} from "@/components/ui/Breadcrumb";
 
 const EventMain: React.FC = () => {
   return (
