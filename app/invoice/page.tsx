@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import card from "@/public/landingpage/cards-1.webp";
-import Footer from "@/components/Footer/Footer";
+import Footer from "@/components/footer/Footer";
 import Link from "next/link";
 
 const Invoice = () => {
