@@ -1,7 +1,11 @@
 "use client";
-import React, { useState } from "react";
-
-import { BellRing, Mail, MailPlus } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import logo from "@/public/logo.png";
+import { BellRing, HeartHandshake, Mail, MailPlus } from "lucide-react";
+import Image from "next/image";
+import logoWhite from "@/public/logo-white.webp";
+import Link from "next/link";
 
 const NavBar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,32 +18,42 @@ const NavBar: React.FC = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+  const pathname = usePathname();
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-white shadow-md">
+    <nav
+      className={`flex items-center justify-between p-4  ${
+        pathname === "/"
+          ? `bg-transparent shadow-none text-white hover:text-white`
+          : `bg-white shadow-md text-gray-600 hover:text-gray-800 border-b-[1px] border-gray-300 px-72`
+      }`}
+    >
       <div className="flex items-center space-x-4">
-        <img
-          src="https://s-light.tiket.photos/t/01E25EBZS3W0FY9GTG6C42E1SE/original/test-discovery/2024/03/01/ac13e03e-896c-4bbb-ba7c-cdf9b04a68b7-1709290197088-cb26aa8c25b24b1aa5df8bb2edce7ea7.png"
-          alt="Logo"
-          className="h-8"
-          height="32"
-          width="128"
-        />
+        <Link href={"/"}>
+          {pathname === "/" ? (
+            <Image
+              src={logoWhite}
+              alt="logo"
+              className="w-[90px] md:w-[128px]  h-fit"
+            />
+          ) : (
+            <Image src={logo} alt="logo" className="w-[128px] h-fit" />
+          )}
+        </Link>
       </div>
-      <div className="hidden md:flex items-center space-x-6">
-        <img
-          src="/navbar/handshake.png"
-          alt="Indonesia Flag"
-          className="h-4 w-6"
-        />
-        <a href="#" className="text-gray-600 hover:text-gray-800">
-          Jadi Partner tiket.com
-        </a>
-        <a href="#" className="text-gray-600 hover:text-gray-800">
+      <div className="hidden md:flex items-center space-x-6 font-semibold text-[13px]">
+        <div className="flex gap-2 items-center">
+          {" "}
+          <HeartHandshake className="" />
+          <a href="#" className="">
+            Jadi Partner tiket.com
+          </a>
+        </div>
+        <a href="#" className="">
           Blibli Tiket Rewards
         </a>
         <div className="flex items-center space-x-1">
-          <span className="text-gray-600">IDR</span>
+          <span className="">IDR</span>
           <img
             src="/navbar/indonesia-flag.png"
             alt="Indonesia Flag"
@@ -47,7 +61,7 @@ const NavBar: React.FC = () => {
           />
         </div>
         <div className="relative">
-          <button className="relative text-gray-600 hover:text-gray-800">
+          <button className="relative ">
             <MailPlus />
           </button>
         </div>
@@ -84,7 +98,9 @@ const NavBar: React.FC = () => {
       </div>
       <div className="md:hidden flex items-center">
         <button
-          className="text-gray-600 hover:text-gray-800 focus:outline-none"
+          className={`focus:outline-none ${
+            pathname === "/" ? "text-white" : "text-gray-800"
+          }`}
           onClick={toggleMobileMenu}
         >
           <svg
@@ -106,13 +122,22 @@ const NavBar: React.FC = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-md z-10">
           <div className="flex flex-col items-end p-4 space-y-4">
-            <a href="#" className="text-gray-600 hover:text-gray-800">
+            <a
+              href="#"
+              className="text-gray-600 font-semibold hover:text-gray-800"
+            >
               Jadi Partner tiket.com
             </a>
-            <a href="#" className="text-gray-600 hover:text-gray-800">
+            <a
+              href="#"
+              className="text-gray-600 font-semibold hover:text-gray-800"
+            >
               Blibli Tiket Rewards
             </a>
-            <a href="#" className="text-gray-600 hover:text-gray-800">
+            <a
+              href="#"
+              className="text-gray-600 font-semibold hover:text-gray-800"
+            >
               Profile
             </a>
             <a href="#" className="text-gray-600 hover:text-gray-800">
