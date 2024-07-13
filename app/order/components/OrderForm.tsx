@@ -75,7 +75,7 @@ const OrderForm = () => {
   const ticketPrice: number = 3050000;
 
   return (
-    <div className=" md:px-72 pb-10 md:py-28">
+    <div className=" md:px-72 pb-10 md:py-20">
       {" "}
       <Formik
         initialValues={initialValues}

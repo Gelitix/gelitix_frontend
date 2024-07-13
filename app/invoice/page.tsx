@@ -1,17 +1,18 @@
 import React from "react";
 import Image from "next/image";
 import card from "@/public/landingpage/cards-1.webp";
-import Footer from "@/components/Footer/Footer";
+import Footer from "@/components/footer/Footer";
 import Link from "next/link";
+import NavBar from "@/components/NavBar";
 
 const Invoice = () => {
   return (
     <section>
-      {" "}
+      <NavBar />{" "}
       <div className="px--4 md:px-72 bg-[#f4f7fe] py-0 md:py-10">
         <div
           className="bg-white rounded-none md:rounded-2xl px-8 py-12"
-          style={{ boxShadow: "0 0 20px 0 rgba(48, 49, 53, .16)" }}
+          style={{ boxShadow: "0 10px 10px -10px rgba(48, 49, 53, .16)" }}
         >
           <h1 className="font-semibold text-xl md:text-[24px]">
             Payment Successful
