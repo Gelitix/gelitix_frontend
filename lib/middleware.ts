@@ -1,37 +1,39 @@
-// // lib/middleware.ts
-// import { NextResponse } from "next/server";
-// import type { NextRequest } from "next/server";
-// import { auth } from "@/lib/auth"; // Make sure this path is correct
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth"; // Make sure this path is correct
+import { getToken } from "next-auth/jwt";
 
-// export async function middleware(request: NextRequest) {
-//   const session = await auth();
+export async function middleware(request: NextRequest) {
+  const session = await auth();
 
-//   const isDashboardPage = request.nextUrl.pathname.startsWith("/dashboard");
-//   const isUserProfilePage = request.nextUrl.pathname.startsWith("/user_profile");
+  console.log("Session:", session); // Debugging statement
 
-//   if (!session && request.nextUrl.pathname.startsWith("/user_profile")) {
-//     return NextResponse.redirect(new URL("/login", request.url));
-//   }
+  // Protect dashboard routes
+  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+    if (!session) {
+      console.log("No session, redirecting to login");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
 
-//   // if (session && request.nextUrl.pathname === "/login") {
-//   //   return NextResponse.redirect(new URL("/", request.url));
-//   // }
+    const userRoles = session.user?.roles;
+    console.log("User Roles:", userRoles); // Debugging statement
 
-//   if (isDashboardPage) {
-//     if (!session) {
-//       return NextResponse.redirect(new URL("/login", request.url));
-//     }
-//   }
+    // Ensure that userRoles is treated as an array for consistency
+    const hasEventOrganizerRole = Array.isArray(userRoles)
+      ? userRoles.includes("ROLE_EVENT_ORGANIZER")
+      : userRoles === "ROLE_EVENT_ORGANIZER";
 
-//   if (isUserProfilePage) {
-//     if (!session) {
-//       return NextResponse.redirect(new URL("/login", request.url));
-//     }
-//   }
+    if (!hasEventOrganizerRole) {
+      console.log(
+        "User does not have the ROLE_EVENT_ORGANIZER, redirecting to unauthorized"
+      );
+      return NextResponse.redirect(new URL("/unauthorized", request.url));
+    }
+  }
 
-//   return NextResponse.next();
-// }
+  return NextResponse.next();
+}
 
-// export const config = {
-//   matcher: ["/dashboard/:path*", "/login"],
-// };
+export const config = {
+  matcher: ["/dashboard/:path*", "/login"],
+};

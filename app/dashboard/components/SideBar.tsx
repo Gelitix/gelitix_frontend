@@ -38,7 +38,7 @@ const Sidebar = () => {
           </div>
           <div className="flex items-center my-8">
             <a
-              href="/dashboard/create_event"
+              href="/dashboard/create-event"
               className="flex items-center rounded-xl bg-[#5080c6] py-3 px-4 text-lg text-white gap-2"
             >
               <Plus color="white" />

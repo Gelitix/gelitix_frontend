@@ -1,23 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import Sidebar from "@/app/dashboard/components/SideBar";
 import SearchBar from "@/components/SearchBar";
 import EventFilter from "@/app/dashboard/components/EventFilter";
-
 import Statistics from "./components/Statistics";
 import StatisticsCards from "../product/components/StatCard";
 import PriceStat from "../product/components/ProfitCard";
 import Collections from "../product/components/Collections";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    } else if (status === "authenticated") {
+      // Check if the user has the required role
+      const userRoles = session?.user?.roles;
+      const hasEventOrganizerRole = Array.isArray(userRoles)
+        ? userRoles.includes("ROLE_EVENT_ORGANIZER")
+        : userRoles === "ROLE_EVENT_ORGANIZER";
+
+      if (!hasEventOrganizerRole) {
+        router.push("/unauthorized");
+      } else {
+        setIsLoading(false);
+      }
+    }
+  }, [status, session, router]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return null; // This shouldn't render, but just in case
+  }
   return (
     <div className="flex">
       <Sidebar />
