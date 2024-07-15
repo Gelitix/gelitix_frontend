@@ -12,7 +12,11 @@ import {
 import React, { useState } from "react";
 import Image from "next/image";
 
-const Sidebar = () => {
+interface SidebarProps {
+  setActiveSection: (section: string) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ setActiveSection }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -38,7 +42,7 @@ const Sidebar = () => {
           </div>
           <div className="flex items-center my-8">
             <a
-              href="/dashboard/create_event"
+              href="/dashboard/create-event"
               className="flex items-center rounded-xl bg-[#5080c6] py-3 px-4 text-lg text-white gap-2"
             >
               <Plus color="white" />
@@ -51,6 +55,7 @@ const Sidebar = () => {
               <Boxes color="gray" />
               <a
                 href="#"
+                onClick={() => setActiveSection("dashboard")}
                 className="hover:text-[#5080c6] text-[#b0b3b6] text-xl"
               >
                 Dashboard
@@ -60,6 +65,7 @@ const Sidebar = () => {
               <CalendarCheck color="gray" />
               <a
                 href="#"
+                onClick={() => setActiveSection("events")}
                 className="hover:text-[#5080c6] text-[#b0b3b6] text-xl"
               >
                 Events
@@ -69,6 +75,7 @@ const Sidebar = () => {
               <Ticket color="gray" />
               <a
                 href="#"
+                onClick={() => setActiveSection("orders")}
                 className="hover:text-[#5080c6] text-[#b0b3b6] text-xl"
               >
                 Orders
@@ -78,6 +85,7 @@ const Sidebar = () => {
               <ScanBarcode color="gray" />
               <a
                 href="#"
+                onClick={() => setActiveSection("transaction")}
                 className="hover:text-[#5080c6] text-[#b0b3b6] text-xl"
               >
                 Transaction
@@ -87,6 +95,7 @@ const Sidebar = () => {
               <BarChart2 color="gray" />
               <a
                 href="#"
+                onClick={() => setActiveSection("statistic")}
                 className="hover:text-[#5080c6] text-[#b0b3b6] text-xl"
               >
                 Statistic

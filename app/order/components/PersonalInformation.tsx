@@ -49,7 +49,8 @@ const PersonalInformation = ({
             {" "}
             <div className="gap-5 flex flex-col">
               <div className="flex gap-5 md:gap-20 ">
-                <div className=" flex items-center gap-1 md:gap-3">
+                <div>Personal information</div>
+                {/* <div className=" flex items-center gap-1 md:gap-3">
                   <label className="flex">
                     <Field
                       type="radio"
@@ -83,7 +84,7 @@ const PersonalInformation = ({
                     />
                   </label>
                   <p className="text-sm md:text-lg">Ms.</p>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex flex-col gap-[1px] border-[1px] border-gray-500 px-3 md:px-4 py-2 md:py-2 rounded-2xl">

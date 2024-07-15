@@ -1,11 +1,16 @@
-// pages/login.tsx
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 const LoginPage: React.FC = () => {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const initialValues = {
     email: "",
     password: "",
@@ -16,8 +21,28 @@ const LoginPage: React.FC = () => {
     password: Yup.string().required("Required"),
   });
 
-  const handleSubmit = (values: typeof initialValues) => {
-    console.log("Form data", values);
+  const handleSubmit = async (values: typeof initialValues) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+
+      if (result?.error) {
+        // Handle the error here
+        setError("Invalid email or password. Please try again.");
+      } else if (result?.ok) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,6 +66,14 @@ const LoginPage: React.FC = () => {
                 <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl">
                   Login
                 </h2>
+                {error && (
+                  <div
+                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    role="alert"
+                  >
+                    <span className="block sm:inline">{error}</span>
+                  </div>
+                )}
                 <div>
                   <label
                     htmlFor="email"
@@ -83,9 +116,12 @@ const LoginPage: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="block rounded-lg bg-blue-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-gray-300 transition duration-100 hover:bg-gray-700 focus-visible:ring active:bg-gray-600 md:text-base"
+                  disabled={isLoading}
+                  className={`block rounded-lg bg-blue-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-gray-300 transition duration-100 hover:bg-gray-700 focus-visible:ring active:bg-gray-600 md:text-base ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
-                  Log in
+                  {isLoading ? "Logging in..." : "Log in"}
                 </button>
               </div>
               <div className="flex items-center justify-center bg-gray-100 p-4 mt-4 rounded-b-lg">
