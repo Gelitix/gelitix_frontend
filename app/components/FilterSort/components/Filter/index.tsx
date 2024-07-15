@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { FilterIcon } from "lucide-react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import seminar from "@/public/landingpage/icons/icons8-training-100 (1).png";
 import exhibition from "@/public/landingpage/icons/icons8-exhibition-100 (1).png";
 import horror from "@/public/landingpage/icons/icons8-horror-100 (1).png";
@@ -19,7 +19,36 @@ import concert from "@/public/landingpage/icons/icons8-concert-100 (1).png";
 import sports from "@/public/landingpage/icons/icons8-sport-96.png";
 import comedy from "@/public/landingpage/icons/icons8-comedy-100 (1).png";
 
-const Filter = () => {
+type FilterOption = {
+  name: string;
+  icon: StaticImageData;
+};
+
+// Define the props for our Filter component
+interface FilterProps {
+  onFilterChange: (filter: string) => void;
+}
+
+const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
+  const [selectedFilter, setSelectedFilter] = useState<string>("");
+
+  const toggleFilter = (filter: string) => {
+    setSelectedFilter((prevFilter) => (prevFilter === filter ? "" : filter));
+  };
+
+  const applyFilters = () => {
+    onFilterChange(selectedFilter);
+  };
+
+  const filterOptions = [
+    { name: "Seminar", icon: seminar },
+    { name: "Exhibition", icon: exhibition },
+    { name: "Horror", icon: horror },
+    { name: "Concert", icon: concert },
+    { name: "Sports", icon: sports },
+    { name: "Comedy", icon: comedy },
+  ];
+
   return (
     <div>
       <AlertDialog>
@@ -48,76 +77,37 @@ const Filter = () => {
                 </svg>
               </AlertDialogCancel>
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              <div className="flex justify-center gap-6">
-                <div className="flex flex-col gap-4 items-center justify-center">
-                  {" "}
-                  <div className="p-4 bg-white border-2 border-[#0064D2] rounded-full hover:opacity-50 transition-all duration-200">
-                    {" "}
-                    <Image
-                      src={seminar}
-                      alt="seminar.png"
-                      className="size-12"
-                    />
-                  </div>
-                  <p>Seminar</p>
-                </div>
-
-                <div className="flex flex-col gap-4 items-center justify-center">
-                  {" "}
-                  <div className="p-4 bg-white border-2 border-[#0064D2] rounded-full hover:opacity-50 transition-all duration-200">
-                    {" "}
-                    <Image
-                      src={exhibition}
-                      alt="exhibition.png"
-                      className="size-12"
-                    />
-                  </div>
-                  <p>Exhibition</p>
-                </div>
-
-                <div className="flex flex-col gap-4 items-center justify-center">
-                  {" "}
-                  <div className="p-4 bg-white border-2 border-[#0064D2] rounded-full hover:opacity-50 transition-all duration-200">
-                    {" "}
-                    <Image src={horror} alt="horror.png" className="size-12" />
-                  </div>
-                  <p>Horror</p>
-                </div>
-
-                <div className="flex flex-col gap-4 items-center justify-center">
-                  {" "}
-                  <div className="p-4 bg-white border-2 border-[#0064D2] rounded-full hover:opacity-50 transition-all duration-200">
-                    {" "}
-                    <Image
-                      src={concert}
-                      alt="concert.png"
-                      className="size-12"
-                    />
-                  </div>
-                  <p>Concert</p>
-                </div>
-
-                <div className="flex flex-col gap-4 items-center justify-center">
-                  {" "}
-                  <div className="p-4 bg-white border-2 border-[#0064D2] rounded-full hover:opacity-50 transition-all duration-200">
-                    {" "}
-                    <Image src={sports} alt="sports.png" className="size-12" />
-                  </div>
-                  <p>Sports</p>
-                </div>
-
-                <div className="flex flex-col gap-4 items-center justify-center">
-                  {" "}
-                  <div className="p-4 bg-white border-2 border-[#0064D2] rounded-full hover:opacity-50 transition-all duration-200">
-                    {" "}
-                    <Image src={comedy} alt="comedy.png" className="size-12" />
-                  </div>
-                  <p>Comedy</p>
-                </div>
-              </div>
-            </AlertDialogDescription>
           </AlertDialogHeader>
+
+          <AlertDialogDescription>
+            <div className="flex gap-2 flex-wrap">
+              {filterOptions.map((option) => (
+                <div
+                  key={option.name}
+                  className="flex flex-col gap-4 items-center justify-center"
+                  onClick={() => toggleFilter(option.name)}
+                >
+                  <div
+                    className={`p-3 bg-white border-2 ${
+                      selectedFilter === option.name
+                        ? "border-[#0064D2]"
+                        : "border-gray-300"
+                    } rounded-full hover:opacity-50 transition-all duration-200 cursor-pointer`}
+                  >
+                    <Image
+                      src={option.icon}
+                      alt={`${option.name}.png`}
+                      className="size-12"
+                    />
+                  </div>
+                  <p>{option.name}</p>
+                </div>
+              ))}
+            </div>
+          </AlertDialogDescription>
+          <AlertDialogAction onClick={applyFilters}>
+            Apply Filters
+          </AlertDialogAction>
         </AlertDialogContent>
       </AlertDialog>
     </div>

@@ -5,7 +5,7 @@ import { Hero } from "./components/Hero";
 import Cards from "./components/Cards";
 import FilterSortMobile from "./components/FilterSortMobile";
 import CarouselLanding from "./components/CarouselLanding";
-import Pagination from "./components/Pagination";
+// import Pagination from "./components/Pagination";
 import FilterSort from "./components/FilterSort";
 
 const page = () => {
@@ -15,7 +15,6 @@ const page = () => {
       <CarouselLanding />
       <FilterSort />
       <Cards />
-      <Pagination />
       <Footer />
       <FilterSortMobile />
     </section>
