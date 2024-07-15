@@ -194,9 +194,9 @@ const CreateEventPage: React.FC = () => {
       <div className="w-full max-w-2xl p-6 mx-auto bg-white rounded-lg shadow-md md:p-8">
         <div className="flex justify-start items-start my-4">
           <img
-            src="/Tiket.png"
-            width={100}
-            height={50}
+            src="/Gelitix-wide.png"
+            width={150}
+            height={75}
             className="items-center"
             alt="Tiket Logo"
           />

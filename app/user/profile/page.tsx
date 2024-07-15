@@ -137,7 +137,7 @@ const Profile: React.FC = () => {
               <div className="flex items-center ml-[71px] mt-3">
                 {" "}
                 <Link
-                  href="/edit-profile"
+                  href="/user/edit-profile"
                   className="text-[#0064D2] font-semibold text-[12px] md:text-base"
                 >
                   Edit Your Profile
