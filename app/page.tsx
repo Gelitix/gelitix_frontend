@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Footer from "@/components/footer/Footer";
 import { Hero } from "./components/Hero";
 import Cards from "./components/Cards";
@@ -14,7 +14,9 @@ const page = () => {
       <Hero />
       <CarouselLanding />
       <FilterSort />
-      <Cards />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Cards />
+      </Suspense>
       <Footer />
       <FilterSortMobile />
     </section>

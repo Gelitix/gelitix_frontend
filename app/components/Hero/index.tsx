@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+"use client";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import seminar from "@/public/landingpage/icons/icons8-training-100 (1).png";
 import exhibition from "@/public/landingpage/icons/icons8-exhibition-100 (1).png";
 import horror from "@/public/landingpage/icons/icons8-horror-100 (1).png";
@@ -84,7 +85,9 @@ export const Hero = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleKeyDown}
             /> */}
-            <Search />
+            <Suspense fallback={<div>Loading...</div>}>
+              <Search />
+            </Suspense>
             <button className="absolute left-[60px] md:left-[545px] top-[109px] md:top-[233px] ml-2">
               <svg
                 stroke="currentColor"
