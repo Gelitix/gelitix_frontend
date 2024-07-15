@@ -1,3 +1,4 @@
+"use client";
 import LandingPageDummyData from "@/DUMMY_DATA/LandingPage/LandingPageDummyData";
 import Card from "./Card";
 import React, { useState, useEffect } from "react";
