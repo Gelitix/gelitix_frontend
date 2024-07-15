@@ -22,6 +22,11 @@ const nextConfig = {
         hostname: "utfs.io",
         pathname: "/f/*",
       },
+      {
+        protocol: "http",
+        hostname: "res.cloudinary.com",
+        pathname: "**",
+      },
     ],
   },
 };
