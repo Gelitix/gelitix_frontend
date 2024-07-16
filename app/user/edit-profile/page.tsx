@@ -24,12 +24,12 @@ const EditProfile = () => {
   const [userData, setUserData] = useState<any>(null);
 
   const validationSchema = Yup.object({
-    username: Yup.string().required("Required"),
+    name: Yup.string().required("Required"),
     phoneNumber: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .min(5, "Must be at least 5 digits")
       .required("Required"),
-    profilePicture: Yup.mixed(),
+    profileImage: Yup.mixed(),
   });
 
   useEffect(() => {
@@ -71,34 +71,35 @@ const EditProfile = () => {
     { setSubmitting }: FormikHelpers<any>
   ) => {
     try {
+      console.log("Submitting form with values:", values);
       const formData = new FormData();
-      formData.append("username", values.username);
+      formData.append("name", values.name);
       formData.append("phoneNumber", values.phoneNumber);
-      if (values.profilePicture) {
-        formData.append("profilePicture", values.profilePicture);
+      if (values.profileImage) {
+        formData.append("profileImage", values.profileImage);
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/user/update-profile`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-          body: formData,
-        }
-      );
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/user/update-profile`;
+      console.log("Sending request to:", url);
+
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+        body: formData,
+      });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error();
       }
 
       const data = await response.json();
       console.log("Success:", data);
       setNotification("Profile updated successfully!");
       fetchUserProfile(); // Refresh user data after update
-    } catch (error) {
-      console.error("Error:", error);
+    } catch {
+      console.error("An error occurred while updating the profile");
       setNotification("Failed to update profile. Please try again.");
     } finally {
       setSubmitting(false);
@@ -111,7 +112,7 @@ const EditProfile = () => {
   ) => {
     const file = event.currentTarget.files?.[0];
     if (file) {
-      setFieldValue("profilePicture", file);
+      setFieldValue("profileImage", file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result as string);
@@ -157,9 +158,9 @@ const EditProfile = () => {
               </h2>
               <Formik
                 initialValues={{
-                  username: userData.username,
+                  name: userData.name,
                   phoneNumber: userData.phoneNumber,
-                  profilePicture: null,
+                  profileImage: null,
                 }}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
@@ -169,22 +170,20 @@ const EditProfile = () => {
                     <div className="flex flex-col gap-[1px] border-[1px] border-gray-500 px-3 md:px-4 py-2 md:py-2 rounded-2xl">
                       <label
                         className="text-[10px] md:text-[12px] md:mb-1 text-gray-400"
-                        htmlFor="username"
+                        htmlFor="name"
                       >
                         Full name
                       </label>
                       <Field
                         type="text"
-                        name="username"
+                        name="name"
                         className="text-slate-500 text-[14px]"
                       />
-                      <div className="flex justify-end">
-                        <ErrorMessage
-                          name="username"
-                          component="div"
-                          className="text-[12px] text-red-800 pt-1 italic"
-                        />
-                      </div>
+                      <ErrorMessage
+                        name="name"
+                        component="div"
+                        className="text-[12px] text-red-800 pt-1 italic"
+                      />
                     </div>
 
                     <div className="flex flex-col gap-[1px] border-[1px] border-gray-500 px-3 md:px-4 py-2 md:py-2 rounded-2xl">
@@ -199,18 +198,16 @@ const EditProfile = () => {
                         name="phoneNumber"
                         className="text-slate-500 text-[14px]"
                       />
-                      <div className="flex justify-end">
-                        <ErrorMessage
-                          name="phoneNumber"
-                          component="div"
-                          className="text-[12px] text-red-800 pt-1 italic"
-                        />
-                      </div>
+                      <ErrorMessage
+                        name="phoneNumber"
+                        component="div"
+                        className="text-[12px] text-red-800 pt-1 italic"
+                      />
                     </div>
 
                     <div className="flex flex-col gap-[1px] border-[1px] border-gray-500 px-3 md:px-4 py-2 md:py-2 rounded-2xl">
                       <label
-                        htmlFor="profilePicture"
+                        htmlFor="profileImage"
                         className="text-[10px] md:text-[12px] md:mb-1 text-gray-400"
                       >
                         Profile Picture
@@ -229,13 +226,6 @@ const EditProfile = () => {
                           className="mt-2 w-32 h-32 object-cover rounded-full"
                         />
                       )}
-                      <div className="flex justify-end">
-                        <ErrorMessage
-                          name="profilePicture"
-                          component="div"
-                          className="text-[12px] text-red-800 pt-1 italic"
-                        />
-                      </div>
                     </div>
 
                     <div className="flex justify-end">

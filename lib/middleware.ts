@@ -41,18 +41,18 @@ export async function middleware(request: NextRequest) {
     console.log("User Roles:", userRoles); // Debugging statement
 
     // Ensure that userRoles is treated as an array for consistency
-    const hasEventOrganizerRole = Array.isArray(userRoles)
-      ? userRoles.includes("ROLE_EVENT_ORGANIZER")
-      : userRoles === "ROLE_EVENT_ORGANIZER";
+    const hasRequiredRole = Array.isArray(userRoles)
+      ? userRoles.includes("ROLE_EVENT_ORGANIZER") ||
+        userRoles.includes("ROLE_USER")
+      : userRoles === "ROLE_EVENT_ORGANIZER" || userRoles === "ROLE_USER";
 
-    if (!hasEventOrganizerRole) {
+    if (!hasRequiredRole) {
       console.log(
-        "User does not have the ROLE_EVENT_ORGANIZER, redirecting to unauthorized"
+        "User does not have the required role, redirecting to unauthorized"
       );
       return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
   }
-
   return NextResponse.next();
 }
 
