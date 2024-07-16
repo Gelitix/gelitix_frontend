@@ -10,6 +10,7 @@ import PriceStat from "../product/components/ProfitCard";
 import Collections from "../product/components/Collections";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import MyEvent from "./components/MyEvent";
 
 const Home: React.FC = () => {
   const { data: session, status } = useSession();
@@ -82,7 +83,11 @@ const Home: React.FC = () => {
           </div>
         );
       case "events":
-        return <div>Events Section</div>; // Placeholder for events content
+        return (
+          <div>
+            <MyEvent />
+          </div>
+        ); // Placeholder for events content
       case "orders":
         return <div>Orders Section</div>; // Placeholder for orders content
       case "transaction":
