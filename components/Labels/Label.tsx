@@ -8,7 +8,7 @@ interface LabelProps {
 const Label: React.FC<LabelProps> = ({ text }) => {
   return (
     <div
-      className="flex items-center justify-center px-4 py-2 rounded-lg text-white text-sm font-medium"
+      className="flex items-center justify-center px-4 py-2 rounded-lg text-white  font-medium text-lg"
       style={{
         background:
           "linear-gradient(to right, rgb(24, 220, 155), rgb(110, 84, 239))",

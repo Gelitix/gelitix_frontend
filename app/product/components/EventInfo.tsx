@@ -10,44 +10,49 @@ import React from "react";
 
 const EventInfo = () => {
   return (
-    <div>
-      <h2 className="pt-5 font-bold">Info Lainnya</h2>
+    <div className="px-10">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger className="flex flex-row items-center gap-2">
+          <AccordionTrigger className="flex gap-2 items-start">
             <img
               src="https://assets-bucket.tiket.com/to-do/v2.32.0/_next/static/media/ic_eticket_general.8bc3c41a.svg"
               alt="Accessible Icon"
               className="h-6 w-6"
             />
-            <p className="text-left">Is it accessible?</p>
+            <p className="text-left text-lg font-semibold">Safety Guarantee</p>
           </AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
+          <AccordionContent className="text-sm px-28">
+            We prioritize your security by implementing advanced encryption
+            methods and secure payment gateways, ensuring that your personal and
+            financial information is always protected.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
-          <AccordionTrigger className="flex flex-row items-center gap-2">
+          <AccordionTrigger className="flex flex-row gap-2">
             <Terms />
-            <span>Is it styled?</span>
+            <span className="text-lg font-semibold">Easy Access</span>
           </AccordionTrigger>
-          <AccordionContent>
-            Yes. It comes with default styles that match the other
-            components&apos; aesthetic.
+          <AccordionContent className="text-sm px-28">
+            Our user-friendly platform allows you to effortlessly browse,
+            purchase, and manage your tickets. With a seamless interface, you
+            can find the events you love and complete transactions in just a few
+            clicks.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
-          <AccordionTrigger className="flex flex-row items-center gap-2">
+          <AccordionTrigger className="flex flex-row gap-2">
             <img
               src="https://assets-bucket.tiket.com/to-do/v2.32.0/_next/static/media/icon-additional-info.4d1b306f.svg"
               alt="Additional Info Icon"
               className="h-6 w-6"
             />
-            <span>Is it animated?</span>
+            <span className="text-lg font-semibold">Customer Support</span>
           </AccordionTrigger>
-          <AccordionContent>
-            Yes. It&apos;s animated by default, but you can disable it if you
-            prefer.
+          <AccordionContent className="text-sm px-28">
+            Our dedicated customer support team is available 24/7 to assist you
+            with any inquiries or issues. Whether you need help with booking or
+            have questions about an event, we are here to provide prompt and
+            reliable assistance.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

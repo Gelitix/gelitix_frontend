@@ -1,5 +1,9 @@
+"useClient";
 import React from "react";
 import Image, { StaticImageData } from "next/image";
+import { useRouter } from "next/navigation";
+import { formatTime, formatDate } from "@/app/helpers/dateUtil";
+
 interface TicketType {
   name: string;
   price: number;
@@ -16,6 +20,7 @@ interface CardsProps {
 }
 
 const Card: React.FC<CardsProps> = ({
+  id,
   imageUrl,
   name,
   date,
@@ -23,9 +28,13 @@ const Card: React.FC<CardsProps> = ({
   ticketTypes,
 }) => {
   const lowestPrice = ticketTypes[0].price;
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/product/${id}`);
+  };
 
   return (
-    <section className="mx-[30px] md:mx-0">
+    <section className="mx-[30px] md:mx-0" onClick={handleClick}>
       <div className="border rounded-xl shadow-xl">
         <div className="">
           <div className="bg-gray-200 flex justify-center rounded-t-xl">
@@ -39,7 +48,9 @@ const Card: React.FC<CardsProps> = ({
           </div>
           <div className="p-4 text-[11px]">
             <p className="font-[600] text-[15px] md:mb-1">{name}</p>
-            <p>{date}</p>
+            <p></p>
+            <p>{formatDate(date)}</p>
+
             <p>{location}</p>
             <div className="flex justify-between mt-[15px] items-center">
               <p className="text-[11px] font-[600] text-green-600">
