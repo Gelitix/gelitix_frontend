@@ -6,7 +6,7 @@ const page = () => {
       {" "}
       <div className="grid h-screen place-content-center bg-gray-900 px-4">
         <h1 className="uppercase tracking-widest text-gray-500 dark:text-gray-400">
-          401 | Unauthorized
+          <a href="/">401 | Unauthorized</a>
         </h1>
       </div>
     </div>
