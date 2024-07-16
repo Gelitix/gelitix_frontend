@@ -11,8 +11,10 @@ import ranch from "@/public/userprofile/ranch.webp";
 import Link from "next/link";
 import mobilehero from "@/public/userprofile/mobile-hero.webp";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 interface ProfileData {
   username: string;
+  name: string;
   email: string;
   phoneNumber?: string;
   profilePicture?: string;
@@ -22,7 +24,8 @@ interface ProfileData {
 
 const Profile: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   const fetchProfileData = async () => {
     if (!session?.accessToken) {
@@ -50,15 +53,20 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    if (session) {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    } else if (status === "authenticated") {
       fetchProfileData();
     }
-  }, [session]);
+  }, [status, session, router]);
 
-  if (!profileData) {
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
 
+  if (!profileData) {
+    return <div>Loading profile data...</div>;
+  }
   return (
     <section className="bg-[#f4f7fe] md:pt-20">
       <Image src={mobilehero} alt="mobilehero.webp" className="md:hidden" />
@@ -130,6 +138,7 @@ const Profile: React.FC = () => {
                   <p className="text-[14px] font-semibold">
                     {profileData.username}
                   </p>
+                  <p>{profileData.name}</p>
                   <p>{profileData.phoneNumber || "No phone number"}</p>
                   <p>{profileData.email}</p>
                 </div>

@@ -10,6 +10,8 @@ import PriceStat from "../product/components/ProfitCard";
 import Collections from "../product/components/Collections";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import MyEvent from "./components/MyEvent";
+import DashNav from "./components/DashNav";
 
 const Home: React.FC = () => {
   const { data: session, status } = useSession();
@@ -82,7 +84,11 @@ const Home: React.FC = () => {
           </div>
         );
       case "events":
-        return <div>Events Section</div>; // Placeholder for events content
+        return (
+          <div>
+            <MyEvent />
+          </div>
+        ); // Placeholder for events content
       case "orders":
         return <div>Orders Section</div>; // Placeholder for orders content
       case "transaction":
@@ -98,42 +104,7 @@ const Home: React.FC = () => {
     <div className="flex">
       <Sidebar setActiveSection={setActiveSection} />
       <div className="flex-1 h-full ml-0 lg:ml-64">
-        <div className="flex items-center justify-between mb-5">
-          <h1 className="text-2xl mt-5 ml-20">Dashboard</h1>
-          <div className="mt-5">
-            <SearchBar />
-          </div>
-          <div className="relative mt-5 mr-20">
-            <div
-              className="h-12 w-12 bg-gray-500 text-white flex items-center justify-center rounded-full cursor-pointer ml-4"
-              onClick={toggleDropdown}
-            >
-              HH
-            </div>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                >
-                  Profile
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                >
-                  Settings
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                >
-                  Logout
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
+        <DashNav />
         {renderContent()}
       </div>
     </div>
