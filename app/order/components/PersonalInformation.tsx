@@ -20,15 +20,20 @@ import OrderForm from "./OrderForm";
 
 const PersonalInformation = ({
   className,
-  ticketPrice,
+  ticket,
+  event,
 }: {
   className: string;
-  ticketPrice: number;
+  ticket: any;
+  event: any;
 }) => {
   // const [notification, setNotification] = useState<string | null>(null);
   const { isSubmitting, values, setFieldValue, initialValues } =
     useFormikContext<FormikValues>();
 
+  if (!ticket || typeof ticket.price === "undefined") {
+    return <div>Loading ticket details...</div>;
+  }
   return (
     // check
     <div className={className}>
@@ -50,41 +55,6 @@ const PersonalInformation = ({
             <div className="gap-5 flex flex-col">
               <div className="flex gap-5 md:gap-20 ">
                 <div>Personal information</div>
-                {/* <div className=" flex items-center gap-1 md:gap-3">
-                  <label className="flex">
-                    <Field
-                      type="radio"
-                      name="ticketType"
-                      value="Mr."
-                      className="size-4 md:size-5 "
-                    />
-                  </label>
-                  <p className="text-sm md:text-lg">Mr.</p>
-                </div>
-
-                <div className=" flex items-center gap-1 md:gap-3">
-                  <label className="flex">
-                    <Field
-                      type="radio"
-                      name="ticketType"
-                      value="Mrs."
-                      className="size-4 md:size-5"
-                    />
-                  </label>
-                  <p className="text-sm md:text-lg">Mrs.</p>
-                </div>
-
-                <div className=" flex items-center gap-1 md:gap-3">
-                  <label className="flex">
-                    <Field
-                      type="radio"
-                      name="ticketType"
-                      value="Ms."
-                      className="size-4 md:size-5"
-                    />
-                  </label>
-                  <p className="text-sm md:text-lg">Ms.</p>
-                </div> */}
               </div>
 
               <div className="flex flex-col gap-[1px] border-[1px] border-gray-500 px-3 md:px-4 py-2 md:py-2 rounded-2xl">
@@ -206,7 +176,9 @@ const PersonalInformation = ({
                 <div className="flex gap-2 md:gap-8 font-semibold text-gray-500">
                   <p className="text-xs md:text-sm flex items-center">
                     <span className="text-[#f15c59] font-semibold text-xs md:text-base">
-                      {formatToIDR(ticketPrice)}
+                      {ticket && ticket.price
+                        ? formatToIDR(ticket.price)
+                        : "Price not available"}
                     </span>
                     /pax
                   </p>
@@ -243,7 +215,9 @@ const PersonalInformation = ({
 
           <div className="border-x border-b border-gray-400 p-4 md:p-6 rounded-b-2xl flex gap-2 md:gap-0 flex-col md:flex-row justify-center md:justify-between items-center bg-white">
             <p className="font-semibold text-base md:text-xl">
-              {formatToIDR(values.ticketAmount * ticketPrice)}
+              {ticket && ticket.price
+                ? formatToIDR(values.ticketAmount * ticket.price)
+                : "Total not available"}
             </p>
             <div>
               {" "}

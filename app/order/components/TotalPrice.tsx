@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Hourglass, TicketX, Zap } from "lucide-react";
 import { useFormikContext } from "formik";
 import { formatToIDR } from "@/lib/formatToIDR";
+import { TicketType } from "@/app/product/components/PackageCard";
 
 interface FormValues {
   name: string;
@@ -17,12 +18,18 @@ interface FormValues {
   ticketAmount: number;
 }
 
-const TotalPrice: React.FC<{ className?: string; ticketPrice: number }> = ({
+const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
   className,
-  ticketPrice,
+  ticket,
+  event,
 }) => {
   const { values } = useFormikContext<FormValues>();
-  const descriptionImage = image1; // Define your image path here
+  // console.log(event);
+
+  if (!ticket || !event) {
+    return <div>Loading ticket details...</div>;
+  }
+  const descriptionImage = event.imageUrl || "/path/to/default/image.jpg";
 
   return (
     <div className={className}>
@@ -76,7 +83,7 @@ const TotalPrice: React.FC<{ className?: string; ticketPrice: number }> = ({
         <div className="flex justify-between bg-white p-4 mt-1 rounded-b-2xl font-semibold items-center">
           <p className="text-xs md:text-sm">Total Payment</p>
           <p className="text-base md:text-xl">
-            {formatToIDR(values.ticketAmount * ticketPrice)}
+            {formatToIDR(values.ticketAmount * (ticket.price || 0))}
           </p>
         </div>
       </div>

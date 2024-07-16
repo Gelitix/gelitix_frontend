@@ -9,7 +9,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/Breadcrumb";
 
-const EventMain: React.FC = () => {
+interface Event {
+  imageUrl: string;
+  // Add other event properties as needed
+}
+
+interface EventMainProps {
+  event: Event;
+}
+
+const EventMain: React.FC<EventMainProps> = ({ event }) => {
   return (
     <div>
       <div className="flex justify-center items-start p-5">
@@ -37,7 +46,7 @@ const EventMain: React.FC = () => {
         <Image
           height="400"
           width="800"
-          src="https://s-light.tiket.photos/t/01E25EBZS3W0FY9GTG6C42E1SE/rsfit1440960gsm/events/2024/05/24/646f5d13-2a0d-47f2-90f2-750a38cedb35-1716522466806-ddc7dbe3e125258383a3ed1c44401228.png"
+          src={event.imageUrl}
           alt="Product Page"
         />
       </div>

@@ -48,7 +48,6 @@ const Cards = () => {
       }).toString();
 
       try {
-        console.log(`http://localhost:8080/api/v1/events?${queryString}`);
         const response = await fetch(
           `http://localhost:8080/api/v1/events?${queryString}`
         );
@@ -56,7 +55,6 @@ const Cards = () => {
           throw new Error("Failed to fetch events");
         }
         const data = await response.json();
-        console.log(data);
         setEvents(data.data);
         setPageNumber(data.pageNumber);
         setLoading(false);
@@ -74,18 +72,24 @@ const Cards = () => {
     setCurrentPage(0);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="text-center font-semibold text-xl my-72">Loading...</div>
+    );
   if (error) return <div>{error}</div>;
 
   const pageNumbers = Array.from({ length: pageNumber }, (_, i) => i + 1);
 
   return (
-    <section>
-      <Filter onFilterChange={handleFilterChange} />
+    <section className="md:px-72">
+      <div className="flex justify-end mb-10">
+        {" "}
+        <Filter onFilterChange={handleFilterChange} />
+      </div>
 
-      <section className="md:grid grid-cols-4 flex flex-col gap-10 md:gap-5 md:px-72">
+      <section className="md:grid grid-cols-4 flex flex-col gap-10 md:gap-5 ">
         {events != null ? (
-          events.map((e, index) => <Card {...e} key={index} />)
+          events.map((e, index) => <Card {...e} key={e.id} />)
         ) : (
           <div>No events available</div>
         )}

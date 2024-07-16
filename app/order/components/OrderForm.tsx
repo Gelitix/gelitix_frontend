@@ -9,10 +9,11 @@ import {
   FormikHelpers,
 } from "formik";
 import { formatToIDR } from "@/lib/formatToIDR";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TotalPrice from "./TotalPrice";
 import { Award } from "lucide-react";
 import PersonalInformation from "./PersonalInformation";
+import { useSearchParams } from "next/navigation";
 
 const validationSchema = Yup.object({
   name: Yup.string().min(4, "Please Enter Your Fullname").required("Required"),
@@ -31,10 +32,55 @@ const validationSchema = Yup.object({
     .required("Required")
     .min(1, "At least one ticket is required"),
 });
-const ticketPrice: number = 3050000;
 
-const OrderForm = () => {
+interface OrderFormProps {
+  eventId: string | null;
+  ticketTypeId: string | null;
+}
+
+const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
   const [notification, setNotification] = useState<string | null>(null);
+  const [ticketDetails, setTicketDetails] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [eventDetails, setEventDetails] = useState<any>(null);
+
+  console.log(ticketTypeId);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (eventId && ticketTypeId) {
+        setIsLoading(true);
+        try {
+          const [ticketRes, eventRes] = await Promise.all([
+            fetch(`http://localhost:8080/api/v1/ticket-type/${ticketTypeId}`),
+            fetch(`http://localhost:8080/api/v1/events/${eventId}`),
+          ]);
+
+          if (!ticketRes.ok || !eventRes.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const [ticketData, eventData] = await Promise.all([
+            ticketRes.json(),
+            eventRes.json(),
+          ]);
+
+          setTicketDetails(ticketData.data.data);
+          setEventDetails(eventData); // Assuming you have a state for event details
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error:", error);
+          setError(
+            "Failed to fetch event and ticket details. Please try again."
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+  }, [eventId, ticketTypeId]);
 
   const initialValues = {
     name: "",
@@ -72,7 +118,7 @@ const OrderForm = () => {
         setNotification("Failed to submit form. Please try again.");
       });
   };
-  const ticketPrice: number = 3050000;
+  // const ticket = ticketDetails.data;
 
   return (
     <div className=" md:px-72 pb-10 md:py-20">
@@ -87,17 +133,20 @@ const OrderForm = () => {
             {" "}
             <TotalPrice
               className="col-span-2  mb-0 md:mb-10 md:hidden"
-              ticketPrice={ticketPrice}
+              ticket={ticketDetails}
+              event={eventDetails}
             />
           </div>
 
           <PersonalInformation
             className="px-6 md:px-0 col-span-4 mt-4 md:mt-0"
-            ticketPrice={ticketPrice}
+            ticket={ticketDetails}
+            event={eventDetails}
           />
           <TotalPrice
             className="col-span-2 hidden md:block"
-            ticketPrice={ticketPrice}
+            ticket={ticketDetails}
+            event={eventDetails}
           />
         </Form>
       </Formik>
