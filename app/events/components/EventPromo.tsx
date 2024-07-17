@@ -98,7 +98,7 @@ const EventPromo: React.FC<EventPromoProps> = ({ ticketPrice }) => {
           // Redirect to dashboard after 2 seconds
           setTimeout(() => {
             router.push("/dashboard");
-          }, 2000);
+          }, 4000);
         } else {
           console.error("Failed to create promo");
           setNotification("Failed to create promo. Please try again.");

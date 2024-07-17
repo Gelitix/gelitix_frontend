@@ -56,7 +56,7 @@ const MyEvent: React.FC = () => {
   }, [session]);
 
   const handleEventClick = (eventId: number) => {
-    router.push(`/events/${eventId}/edit`);
+    router.push(`/events/edit/${eventId}`);
   };
 
   return (

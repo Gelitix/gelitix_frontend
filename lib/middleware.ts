@@ -31,6 +31,28 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  if (request.nextUrl.pathname.startsWith("/events")) {
+    if (!session) {
+      console.log("No session, redirecting to login");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    const userRoles = session.user?.roles;
+    console.log("User Roles:", userRoles); // Debugging statement
+
+    // Ensure that userRoles is treated as an array for consistency
+    const hasEventOrganizerRole = Array.isArray(userRoles)
+      ? userRoles.includes("ROLE_EVENT_ORGANIZER")
+      : userRoles === "ROLE_EVENT_ORGANIZER";
+
+    if (!hasEventOrganizerRole) {
+      console.log(
+        "User does not have the ROLE_EVENT_ORGANIZER, redirecting to unauthorized"
+      );
+      return NextResponse.redirect(new URL("/unauthorized", request.url));
+    }
+  }
+
   if (request.nextUrl.pathname.startsWith("/user")) {
     if (!session) {
       console.log("No session, redirecting to login");
@@ -57,5 +79,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/user/:path*"],
+  matcher: ["/dashboard/:path*", "/login", "/user/:path*", "/events/:path*"],
 };

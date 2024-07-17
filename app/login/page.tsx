@@ -8,6 +8,7 @@ import { signIn, useSession } from "next-auth/react";
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
+  const { status } = useSession();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +45,12 @@ const LoginPage: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">

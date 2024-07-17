@@ -180,7 +180,7 @@ const EventCreate: React.FC = () => {
         // Redirect to dashboard after 2 seconds
         setTimeout(() => {
           router.push("/dashboard");
-        }, 2000);
+        }, 4000);
       } else {
         console.error("Failed to create event");
         setNotification("Failed to create event. Please try again.");

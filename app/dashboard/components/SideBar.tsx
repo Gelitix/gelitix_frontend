@@ -48,14 +48,14 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveSection }) => {
 
           <div className="flex flex-col space-y-4 mb-8">
             <a
-              href="/dashboard/create-event"
+              href="/events/create-event"
               className="flex items-center justify-center rounded-lg bg-[#5080c6] py-3 px-4 text-lg text-white gap-2 hover:bg-[#4070b6] transition-colors"
             >
               <Plus size={20} />
               Create Event
             </a>
             <a
-              href="/dashboard/create-promo"
+              href="/events/create-promo"
               className="flex items-center justify-center rounded-lg bg-[#50c680] py-3 px-4 text-lg text-white gap-2 hover:bg-[#40b670] transition-colors"
             >
               <Tag size={20} />
