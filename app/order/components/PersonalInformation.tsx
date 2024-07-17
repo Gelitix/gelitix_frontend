@@ -12,6 +12,9 @@ import {
   ErrorMessage,
   FormikHelpers,
   useFormikContext,
+  FormikErrors,
+  FormikState,
+  FormikTouched,
 } from "formik";
 import * as Yup from "yup";
 import { formatToIDR } from "@/lib/formatToIDR";
@@ -29,6 +32,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useSession } from "next-auth/react";
+import { profile } from "console";
 
 interface PromoDetails {
   name: string;
@@ -37,34 +42,77 @@ interface PromoDetails {
   endValid: string;
 }
 
-const PersonalInformation = ({
+interface ProfileData {
+  pointBalance: number;
+  name?: string;
+  email?: string;
+}
+
+interface PersonalInformationProps {
+  className: string;
+  ticket: any; // Consider creating a more specific type for ticket
+  event: any; // Consider creating a more specific type for event
+  onSubmit: () => void;
+}
+
+const PersonalInformation: React.FC<PersonalInformationProps> = ({
   className,
   ticket,
   event,
-}: {
-  className: string;
-  ticket: any;
-  event: any;
+  onSubmit,
 }) => {
-  // const [notification, setNotification] = useState<string | null>(null);
-  const [promoDetails, setPromoDetails] = useState<PromoDetails | null>(null);
+  const { handleSubmit } = useFormikContext();
+  const { data: session, status } = useSession();
+  const [promoDetails, setPromoDetails] = useState<PromoDetails[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [pointUsed, setPointUsed] = useState<number>(0);
   const { isSubmitting, values, setFieldValue, initialValues } =
     useFormikContext<FormikValues>();
 
   useEffect(() => {
-    const fetchPromoDetails = async () => {
-      if (event && event.id) {
+    const fetchProfileData = async () => {
+      if (session && session.accessToken) {
         try {
-          const userId = 1;
-          const eventId = event.id;
-
           const response = await fetch(
-            `http://localhost:8080/api/v1/promo-detail/${userId}/${eventId}`,
+            "http://localhost:8080/api/v1/user/profile",
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session.accessToken}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setProfileData(data.data);
+        } catch (error) {
+          console.error("Error fetching profile data:", error);
+        }
+      }
+    };
+
+    fetchProfileData();
+  }, [session]);
+
+  useEffect(() => {
+    const fetchPromoDetails = async () => {
+      if (event && event.id && session) {
+        try {
+          const userId = session.user.id;
+          console.log(userId);
+          const eventId = event.id;
+
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/promo-detail/${userId}/${eventId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.accessToken}`,
               },
             }
           );
@@ -74,7 +122,7 @@ const PersonalInformation = ({
           }
           const data: PromoDetails = await response.json();
           console.log(data);
-          setPromoDetails(data);
+          setPromoDetails(data as unknown as PromoDetails[]);
           console.log(promoDetails);
         } catch (error) {
           console.error("Error fetching promo details:", error);
@@ -83,7 +131,16 @@ const PersonalInformation = ({
     };
     console.log(promoDetails);
     fetchPromoDetails();
-  }, [event]);
+  }, [event, session]);
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    return <div>You must be logged in to view this page.</div>;
+  }
+
   if (!ticket || typeof ticket.price === "undefined") {
     return <div>Loading ticket details...</div>;
   }
@@ -104,7 +161,6 @@ const PersonalInformation = ({
           style={{ boxShadow: "0 0 20px 0 rgba(48, 49, 53, .16)" }}
         >
           <div>
-            {" "}
             <div className="gap-5 flex flex-col">
               <div className="flex gap-5 md:gap-20 ">
                 <div>Personal information</div>
@@ -195,8 +251,6 @@ const PersonalInformation = ({
               </div>
             </div>
           </div>
-
-          {/* {notification && <p>{notification}</p>} */}
         </div>
 
         <h2 className="font-semibold text-lg md:text-2xl mb-1 md:mb-2">
@@ -212,7 +266,6 @@ const PersonalInformation = ({
           <div className="bg-gradient-to-r from-[#18dc9b] to-[#6e54ef] p-2 md:p-4 text-white text-[10px] md:text-sm font-normal md:justify-center flex items-center gap-2 rounded-t-2xl">
             <Award></Award>
             <p>
-              {" "}
               You&#39;re one step closer to get{" "}
               <span className="font-semibold">Lowest Price Guarantee</span>
             </p>
@@ -223,7 +276,6 @@ const PersonalInformation = ({
               Ticket quantity
             </h2>
             <div className="">
-              {" "}
               <div className="flex items-center justify-between p-3 md:p-4 border-[1px] border-gray-400 rounded-xl">
                 <p className="text-xs md:text-sm font-semibold">Pax</p>
                 <div className="flex gap-2 md:gap-8 font-semibold text-gray-500">
@@ -273,7 +325,6 @@ const PersonalInformation = ({
                 : "Total not available"}
             </p>
             <div>
-              {" "}
               <ErrorMessage
                 name="ticketAmount"
                 component="div"
@@ -289,8 +340,9 @@ const PersonalInformation = ({
                 type="submit"
                 disabled={isSubmitting}
                 className="bg-[#007cff] text-white py-2 md:py-2 px-3 md:px-4   rounded font-semibold disabled:bg-gray-300 text-[11px] md:text-sm"
+                onClick={onSubmit}
               >
-                {isSubmitting ? "Submitting..." : "Continue to payment"}
+                Book Now
               </button>
             </div>
           </div>
@@ -302,14 +354,13 @@ const PersonalInformation = ({
           <DrawerHeader>
             <DrawerTitle className="text-3xl mb-5">Promo </DrawerTitle>
             <DrawerDescription>
-              {promoDetails && promoDetails.data ? (
+              {promoDetails ? (
                 promoDetails.data.map((promo: PromoDetails, index: number) => (
                   <div
                     className="text-lg flex items-center justify-between"
                     key={index}
                   >
                     <div className="flex gap-24 items-center">
-                      {" "}
                       <div className="flex gap-5">
                         <TicketPercent size={40} />
                         <div className="flex gap-10 items-center">
@@ -347,6 +398,41 @@ const PersonalInformation = ({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+
+      <div
+        className="border-[1px] border-gray-400 p-6 px-8 rounded-3xl mb-10 bg-white mt-16 "
+        style={{ boxShadow: "0 0 20px 0 rgba(48, 49, 53, .16)" }}
+      >
+        {profileData ? (
+          // Display profile data
+          <div className="flex justify-between">
+            <p className="text-xl font-semibold">
+              {" "}
+              Point Balance: {profileData.pointBalance}
+            </p>
+
+            <div className="flex gap-3">
+              {" "}
+              <input
+                type="number"
+                max={profileData.pointBalance}
+                min={0}
+                placeholder="Insert points here"
+                className="w-44"
+                onChange={(e) => setPointUsed(Number(e.target.value))}
+              />
+              <button
+                className="bg-[#007cff] text-white font-semibold p-2 px-4 rounded-[10px]"
+                onClick={() => setFieldValue("pointUsed", pointUsed)}
+              >
+                Apply Points
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p>Loading point balance...</p>
+        )}{" "}
+      </div>
     </div>
   );
 };

@@ -49,7 +49,7 @@ const Cards = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/v1/events?${queryString}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events?${queryString}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch events");

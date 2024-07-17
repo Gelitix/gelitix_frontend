@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface EventPromoProps {
   ticketPrice: number;
@@ -13,11 +14,12 @@ interface Event {
 }
 
 const EventPromo: React.FC<EventPromoProps> = ({ ticketPrice }) => {
-  const [promoCreated, setPromoCreated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const [notification, setNotification] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -89,14 +91,21 @@ const EventPromo: React.FC<EventPromoProps> = ({ ticketPrice }) => {
         );
 
         if (response.ok) {
-          setPromoCreated(true);
-          setError(null);
+          const data = await response.json();
+          console.log("Promo created successfully", data);
+          setNotification("Promo created successfully!");
+
+          // Redirect to dashboard after 2 seconds
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 4000);
         } else {
-          const errorData = await response.json();
-          setError(errorData.message || "Failed to create promo");
+          console.error("Failed to create promo");
+          setNotification("Failed to create promo. Please try again.");
         }
       } catch (error) {
-        setError("An error occurred while creating the promo");
+        console.error("Error creating promo", error);
+        setNotification("An error occurred. Please try again.");
       }
     },
   });
@@ -110,10 +119,6 @@ const EventPromo: React.FC<EventPromoProps> = ({ ticketPrice }) => {
       formik.setFieldValue("discount", 0);
     }
   };
-
-  if (!session) {
-    return <p>Access denied. Please log in.</p>;
-  }
 
   return (
     <div className="bg-gradient-to-br from-white to-[#d3e8ff] min-h-screen p-4 sm:p-6 md:p-8 lg:p-10">
@@ -146,7 +151,7 @@ const EventPromo: React.FC<EventPromoProps> = ({ ticketPrice }) => {
                 name="eventId"
                 value={formik.values.eventId}
                 onChange={formik.handleChange}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-black focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm rounded-md"
               >
                 <option value="">Select an event</option>
                 {events.map((event) => (
@@ -296,10 +301,12 @@ const EventPromo: React.FC<EventPromoProps> = ({ ticketPrice }) => {
             </div>
           </form>
         )}
-        {promoCreated && (
-          <p className="mt-4 text-green-600">Promo created successfully!</p>
-        )}
       </div>
+      {notification && (
+        <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white p-4 text-center">
+          {notification}
+        </div>
+      )}
     </div>
   );
 };

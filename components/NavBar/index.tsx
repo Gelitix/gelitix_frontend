@@ -41,7 +41,7 @@ const NavBar: React.FC = () => {
     if (session?.accessToken) {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/v1/user/profile",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/user/profile`,
           {
             headers: {
               Authorization: `Bearer ${session.accessToken}`,
@@ -157,7 +157,10 @@ const NavBar: React.FC = () => {
           </div>
         )}
         {status === "unauthenticated" && (
-          <Link href="/login" className="text-white hover:text-yellow-400">
+          <Link
+            href="/login"
+            className="text-amber-400 hover:text-cyan-500 font-bold"
+          >
             Login
           </Link>
         )}

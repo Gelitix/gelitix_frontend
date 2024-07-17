@@ -32,7 +32,7 @@ export const Hero = () => {
   const searchEventNames = async (name: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/event-name/${name}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/event-name/${name}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch event names");

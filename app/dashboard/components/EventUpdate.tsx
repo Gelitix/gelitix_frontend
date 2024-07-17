@@ -18,6 +18,7 @@ interface Location {
 }
 
 interface EventFormValues {
+  id: any;
   name: string;
   date: string;
   startTime: string;
@@ -36,6 +37,7 @@ interface EventFormValues {
 }
 
 const initialValues: EventFormValues = {
+  id: "",
   name: "",
   date: "",
   startTime: "",
@@ -82,11 +84,17 @@ const EventUpdate: React.FC = () => {
   const { data: session } = useSession();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
+  const [eventList, setEventList] = useState<
+    Array<{ id: number; name: string }>
+  >([]);
+  const [selectedEvent, setSelectedEvent] = useState<EventFormValues | null>(
+    null
+  );
 
   const fetchEventCategories = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/api/v1/event-categories"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/event-categories`
       );
       if (response.ok) {
         const data = await response.json();
@@ -101,7 +109,9 @@ const EventUpdate: React.FC = () => {
 
   const fetchEventLocations = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/location");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/location`
+      );
       if (response.ok) {
         const data = await response.json();
         setEventLocations(data);
@@ -113,15 +123,30 @@ const EventUpdate: React.FC = () => {
     }
   };
 
+  const fetchEventList = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/list`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch event list");
+      }
+      const data = await response.json();
+      setEventList(data); // Assuming data is an array fetched from the API
+    } catch (error) {
+      console.error("Error fetching event list:", error);
+    }
+  };
+
   useEffect(() => {
     fetchEventCategories();
     fetchEventLocations();
-  }, []);
+    fetchEventList();
+  }, [session]);
 
   const handleSubmit = async (values: EventFormValues) => {
-    if (!session) {
-      console.error("No active session");
-      // Handle the case where there's no active session (e.g., redirect to login)
+    if (!session || !selectedEvent?.id) {
+      console.error("No active session or event ID");
       return;
     }
 
@@ -160,7 +185,7 @@ const EventUpdate: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/v1/events/create-event",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/${selectedEvent.id}`,
         {
           method: "PUT",
           headers: {
@@ -172,19 +197,19 @@ const EventUpdate: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Event created successfully", data);
-        setSuccessMessage("Event created successfully!");
+        console.log("Event updated successfully", data);
+        setSuccessMessage("Event updated successfully!");
 
         // Redirect to dashboard after 2 seconds
         setTimeout(() => {
           router.push("/dashboard");
         }, 2000);
       } else {
-        console.error("Failed to create event");
-        setSuccessMessage("Failed to create event. Please try again.");
+        console.error("Failed to update event");
+        setSuccessMessage("Failed to update event. Please try again.");
       }
     } catch (error) {
-      console.error("Error creating event", error);
+      console.error("Error updating event", error);
       setSuccessMessage("An error occurred. Please try again.");
     }
   };
@@ -205,12 +230,29 @@ const EventUpdate: React.FC = () => {
           Update Event
         </h2>
         <Formik
-          initialValues={initialValues}
+          initialValues={selectedEvent || initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize
         >
           {({ values, setFieldValue }) => (
             <Form className="space-y-4">
+              <div className="mb-4">
+                <label
+                  htmlFor="eventSelect"
+                  className="block mb-2 text-sm font-medium text-gray-700"
+                >
+                  Select Event to Update
+                </label>
+                <select>
+                  <option value="">Select an event</option>
+                  {eventList.map((event) => (
+                    <option key={event.id} value={event.id}>
+                      {event.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div>
                 <label
                   htmlFor="name"

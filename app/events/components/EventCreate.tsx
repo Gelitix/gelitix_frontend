@@ -80,13 +80,13 @@ const EventCreate: React.FC = () => {
   const [eventCategories, setEventCategories] = useState<Category[]>([]);
   const [eventLocations, setEventLocations] = useState<Location[]>([]);
   const { data: session } = useSession();
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
   const router = useRouter();
 
   const fetchEventCategories = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/api/v1/event-categories"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/event-categories`
       );
       if (response.ok) {
         const data = await response.json();
@@ -101,7 +101,9 @@ const EventCreate: React.FC = () => {
 
   const fetchEventLocations = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/location");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/location`
+      );
       if (response.ok) {
         const data = await response.json();
         setEventLocations(data);
@@ -146,7 +148,7 @@ const EventCreate: React.FC = () => {
 
     // Append ticketTypes as separate form fields
     values.ticketTypes.forEach((ticket, index) => {
-      formData.append(`ticketTypes[${index}].type`, ticket.name);
+      formData.append(`ticketTypes[${index}].name`, ticket.name);
       formData.append(`ticketTypes[${index}].price`, ticket.price.toString());
       formData.append(
         `ticketTypes[${index}].quantity`,
@@ -160,7 +162,7 @@ const EventCreate: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/v1/events/create-event",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/create-event`,
         {
           method: "POST",
           headers: {
@@ -173,19 +175,19 @@ const EventCreate: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Event created successfully", data);
-        setSuccessMessage("Event created successfully!");
+        setNotification("Event created successfully!");
 
         // Redirect to dashboard after 2 seconds
         setTimeout(() => {
           router.push("/dashboard");
-        }, 2000);
+        }, 4000);
       } else {
         console.error("Failed to create event");
-        setSuccessMessage("Failed to create event. Please try again.");
+        setNotification("Failed to create event. Please try again.");
       }
     } catch (error) {
       console.error("Error creating event", error);
-      setSuccessMessage("An error occurred. Please try again.");
+      setNotification("An error occurred. Please try again.");
     }
   };
 
@@ -418,6 +420,7 @@ const EventCreate: React.FC = () => {
                       <div key={index} className="mb-4">
                         <Field
                           name={`ticketTypes.${index}.name`}
+                          type="text"
                           placeholder="Ticket Name"
                           className="w-full px-4 py-2 mb-2 border rounded-md"
                         />
@@ -511,6 +514,11 @@ const EventCreate: React.FC = () => {
           )}
         </Formik>
       </div>
+      {notification && (
+        <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white p-4 text-center">
+          {notification}
+        </div>
+      )}
     </div>
   );
 };
