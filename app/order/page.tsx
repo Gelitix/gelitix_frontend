@@ -9,24 +9,24 @@ import NavBar from "@/components/NavBar";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import RoleBasedAccess from "../components/RoleBasedAccess";
 
 const Page = () => {
   const searchParams = useSearchParams();
   const eventId = searchParams.get("eventId");
   const ticketTypeId = searchParams.get("ticketTypeId");
-
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
+  const ROLE_USER = "ROLE_USER";
 
   return (
-    <div className="">
-      <div className=" bg-[#F4F7FE]">
-        <NavBar />
-        <OrderForm eventId={eventId} ticketTypeId={ticketTypeId} />
+    <RoleBasedAccess allowedRoles={["ROLE_USER"]}>
+      <div className="">
+        <div className=" bg-[#F4F7FE]">
+          <NavBar />
+          <OrderForm eventId={eventId} ticketTypeId={ticketTypeId} />
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </RoleBasedAccess>
   );
 };
 

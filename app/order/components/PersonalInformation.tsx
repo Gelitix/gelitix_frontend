@@ -80,7 +80,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       if (session && session.accessToken) {
         try {
           const response = await fetch(
-            "http://localhost:8080/api/v1/user/profile",
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/user/profile`,
             {
               method: "GET",
               headers: {

@@ -70,7 +70,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
               `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/ticket-type/${ticketTypeId}`
             ),
             fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/events/${eventId}`
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/${eventId}`
             ),
           ]);
 
@@ -133,7 +133,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/orders`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/order`,
         {
           method: "POST",
           headers: {
