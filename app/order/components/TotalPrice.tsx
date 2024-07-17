@@ -8,6 +8,7 @@ import { Hourglass, TicketX, Zap } from "lucide-react";
 import { useFormikContext } from "formik";
 import { formatToIDR } from "@/lib/formatToIDR";
 import { TicketType } from "@/app/product/components/PackageCard";
+import { formatTime, formatDate } from "@/app/helpers/dateUtil";
 
 interface FormValues {
   name: string;
@@ -25,7 +26,8 @@ const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
 }) => {
   const { values } = useFormikContext<FormValues>();
   // console.log(event);
-
+  console.log(event);
+  console.log(ticket);
   if (!ticket || !event) {
     return <div>Loading ticket details...</div>;
   }
@@ -39,15 +41,15 @@ const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
       >
         {" "}
         <div className="bg-white h-fit p-4 rounded-t-2xl">
-          <div className="flex gap-4 border-b border-gray-300 pb-3">
+          <div className="flex gap-4 border-b border-gray-300 pb-3 items-center">
             <Image
               src={descriptionImage}
               alt="banner.webp"
-              className="w-14 rounded-xl"
+              className="w-20 rounded-xl"
+              width={14}
+              height={14}
             />
-            <p className="font-semibold ">
-              ALL-4-ONE 30 YEARS ANNIVERSARY TOUR
-            </p>
+            <p className="font-semibold ">{event.name}</p>
           </div>
 
           <div className="grid grid-cols-2 text-sm mt-4 border-b border-gray-300 pb-3">
@@ -62,7 +64,7 @@ const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
 
             <div className="col-span-1 flex flex-col gap-[7px]">
               <p className="text-gray-400">Selected Date</p>
-              <p>Fri, 12 Jul 2024</p>
+              <p>{formatDate(event.date)}</p>
             </div>
           </div>
 

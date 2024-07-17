@@ -65,8 +65,9 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
             ticketRes.json(),
             eventRes.json(),
           ]);
-
-          setTicketDetails(ticketData.data.data);
+          console.log(ticketData);
+          console.log(eventData);
+          setTicketDetails(ticketData.data);
           setEventDetails(eventData); // Assuming you have a state for event details
           setIsLoading(false);
         } catch (error) {

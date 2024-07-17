@@ -1,7 +1,7 @@
 "use client";
 
-import { Award, Calendar, MapPin, Medal } from "lucide-react";
-import React, { useState } from "react";
+import { Award, Calendar, MapPin, Medal, TicketPercent } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import logo from "@/public/logo.png";
 import {
@@ -17,6 +17,25 @@ import * as Yup from "yup";
 import { formatToIDR } from "@/lib/formatToIDR";
 import TotalPrice from "./TotalPrice";
 import OrderForm from "./OrderForm";
+import { formatDate } from "@/app/helpers/dateUtil";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
+interface PromoDetails {
+  name: string;
+  discount: string;
+  startValid: string;
+  endValid: string;
+}
 
 const PersonalInformation = ({
   className,
@@ -28,14 +47,48 @@ const PersonalInformation = ({
   event: any;
 }) => {
   // const [notification, setNotification] = useState<string | null>(null);
+  const [promoDetails, setPromoDetails] = useState<PromoDetails | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const { isSubmitting, values, setFieldValue, initialValues } =
     useFormikContext<FormikValues>();
 
+  useEffect(() => {
+    const fetchPromoDetails = async () => {
+      if (event && event.id) {
+        try {
+          const userId = 1;
+          const eventId = event.id;
+
+          const response = await fetch(
+            `http://localhost:8080/api/v1/promo-detail/${userId}/${eventId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data: PromoDetails = await response.json();
+          console.log(data);
+          setPromoDetails(data);
+          console.log(promoDetails);
+        } catch (error) {
+          console.error("Error fetching promo details:", error);
+        }
+      }
+    };
+    console.log(promoDetails);
+    fetchPromoDetails();
+  }, [event]);
   if (!ticket || typeof ticket.price === "undefined") {
     return <div>Loading ticket details...</div>;
   }
+
   return (
-    // check
     <div className={className}>
       <h1 className="text-lg md:text-2xl font-semibold mb-1 md:mb-2">
         Contact Details
@@ -227,9 +280,15 @@ const PersonalInformation = ({
                 className="text-[12px] text-red-800 pt-1 italic"
               />
               <button
+                className="bg-[#007cff] text-white py-2 md:py-2 px-3 md:px-4 mr-4 rounded font-semibold disabled:bg-gray-300 text-[11px] md:text-sm"
+                onClick={() => setIsOpen(true)}
+              >
+                Use Promo
+              </button>
+              <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[#007cff] text-white py-2 md:py-3 px-3 md:px-9   rounded font-semibold disabled:bg-gray-300 text-[11px] md:text-xl"
+                className="bg-[#007cff] text-white py-2 md:py-2 px-3 md:px-4   rounded font-semibold disabled:bg-gray-300 text-[11px] md:text-sm"
               >
                 {isSubmitting ? "Submitting..." : "Continue to payment"}
               </button>
@@ -237,6 +296,57 @@ const PersonalInformation = ({
           </div>
         </div>
       </div>
+
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle className="text-3xl mb-5">Promo </DrawerTitle>
+            <DrawerDescription>
+              {promoDetails && promoDetails.data ? (
+                promoDetails.data.map((promo: PromoDetails, index: number) => (
+                  <div
+                    className="text-lg flex items-center justify-between"
+                    key={index}
+                  >
+                    <div className="flex gap-24 items-center">
+                      {" "}
+                      <div className="flex gap-5">
+                        <TicketPercent size={40} />
+                        <div className="flex gap-10 items-center">
+                          <p>
+                            <span className="font-semibold">Name:</span>{" "}
+                            {promo.name}
+                          </p>
+                          <p>
+                            <span className="font-semibold">Discount:</span>{" "}
+                            {promo.discount}%
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <p>
+                          <span className="font-semibold">Valid Date:</span>{" "}
+                          {formatDate(promo.startValid)} -{" "}
+                          {formatDate(promo.endValid)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button className="border-[1px] text-lg font-semibold border-black">
+                      Use Promo
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <div>No promo exists for this event</div>
+              )}
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <DrawerClose></DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
