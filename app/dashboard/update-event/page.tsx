@@ -1,11 +1,13 @@
 import React from "react";
-import EditProfile from "../components/EditProfile";
+import EventUpdate from "../components/EventUpdate";
 import RoleBasedAccess from "@/app/components/RoleBasedAccess";
 
 const page = () => {
   return (
-    <RoleBasedAccess allowedRoles={["ROLE_USER", "ROLE_EVENT_ORGANIZER"]}>
-      <EditProfile />
+    <RoleBasedAccess allowedRoles={["ROLE_EVENT_ORGANIZER"]}>
+      <div>
+        <EventUpdate />
+      </div>
     </RoleBasedAccess>
   );
 };
