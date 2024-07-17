@@ -61,7 +61,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   event,
   onSubmit,
 }) => {
-  const { handleSubmit } = useFormikContext();
+  // console.log("PersonalInformation rendering");
+  const { submitForm } = useFormikContext();
   const { data: session, status } = useSession();
   const [promoDetails, setPromoDetails] = useState<PromoDetails[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -69,6 +70,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   const [pointUsed, setPointUsed] = useState<number>(0);
   const { isSubmitting, values, setFieldValue, initialValues } =
     useFormikContext<FormikValues>();
+
+  useEffect(() => {
+    console.log("Formik values:", values);
+  }, [values]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -98,12 +103,16 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     fetchProfileData();
   }, [session]);
 
+  // useEffect(() => {
+  //   console.log("PersonalInformation useEffect running");
+  //   console.log("PersonalInformation values:", values);
+  // }, [values]);
+
   useEffect(() => {
     const fetchPromoDetails = async () => {
       if (event && event.id && session) {
         try {
           const userId = session.user.id;
-          console.log(userId);
           const eventId = event.id;
 
           const response = await fetch(
@@ -121,9 +130,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data: PromoDetails = await response.json();
-          console.log(data);
           setPromoDetails(data as unknown as PromoDetails[]);
-          console.log(promoDetails);
         } catch (error) {
           console.error("Error fetching promo details:", error);
         }
@@ -145,6 +152,13 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     return <div>Loading ticket details...</div>;
   }
 
+  const pointFill = (point: any) => {
+    if (point > (profileData?.pointBalance || 0)) {
+      point = profileData?.pointBalance;
+    }
+    setPointUsed(point);
+  };
+
   return (
     <div className={className}>
       <h1 className="text-lg md:text-2xl font-semibold mb-1 md:mb-2">
@@ -154,7 +168,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
         Fill in this form correctly. We&#39;ll send the e-ticket to the email
         address as declared on this page.
       </p>
-
       <div>
         <div
           className="border-[1px] border-gray-400 p-6 rounded-3xl mb-10 bg-white"
@@ -177,6 +190,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                   type="text"
                   name="name"
                   className="text-slate-500 text-[12px] md:text-[14px]"
+                  onBlur={(e: any) => setFieldValue("fullname", e.target.value)}
                 />
                 <div className="flex justify-end">
                   <ErrorMessage
@@ -198,6 +212,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                   type="text"
                   name="phone"
                   className="text-slate-500 text-[12px] md:text-[14px]"
+                  onBlur={(e: any) =>
+                    setFieldValue("phoneNumber", e.target.value)
+                  }
                 />
                 <div className="flex justify-end">
                   <ErrorMessage
@@ -219,6 +236,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                   type="email"
                   name="email"
                   className="text-slate-500 text-[12px] md:text-[14px]"
+                  onChange={(e: any) => setFieldValue("email", e.target.value)}
                 />
                 <div className="flex justify-end">
                   <ErrorMessage
@@ -340,7 +358,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 type="submit"
                 disabled={isSubmitting}
                 className="bg-[#007cff] text-white py-2 md:py-2 px-3 md:px-4   rounded font-semibold disabled:bg-gray-300 text-[11px] md:text-sm"
-                onClick={onSubmit}
               >
                 Book Now
               </button>
@@ -348,13 +365,13 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           </div>
         </div>
       </div>
-
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle className="text-3xl mb-5">Promo </DrawerTitle>
             <DrawerDescription>
               {promoDetails ? (
+                //@ts-ignore
                 promoDetails.data.map((promo: PromoDetails, index: number) => (
                   <div
                     className="text-lg flex items-center justify-between"
@@ -419,11 +436,12 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 min={0}
                 placeholder="Insert points here"
                 className="w-44"
-                onChange={(e) => setPointUsed(Number(e.target.value))}
+                onBlur={(e) => pointFill(Number(e.target.value))}
               />
               <button
                 className="bg-[#007cff] text-white font-semibold p-2 px-4 rounded-[10px]"
                 onClick={() => setFieldValue("pointUsed", pointUsed)}
+                type="button"
               >
                 Apply Points
               </button>
