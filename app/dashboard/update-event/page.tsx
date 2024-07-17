@@ -1,6 +1,6 @@
+import RoleBasedAccess from "@/app/components/RoleBasedAccess";
 import React from "react";
 import EventUpdate from "../components/EventUpdate";
-import RoleBasedAccess from "@/app/components/RoleBasedAccess";
 
 const page = () => {
   return (

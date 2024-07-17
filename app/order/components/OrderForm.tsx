@@ -53,8 +53,12 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
         setIsLoading(true);
         try {
           const [ticketRes, eventRes] = await Promise.all([
-            fetch(`http://localhost:8080/api/v1/ticket-type/${ticketTypeId}`),
-            fetch(`http://localhost:8080/api/v1/events/${eventId}`),
+            fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/ticket-type/${ticketTypeId}`
+            ),
+            fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/events/${eventId}`
+            ),
           ]);
 
           if (!ticketRes.ok || !eventRes.ok) {
@@ -109,14 +113,17 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/v1/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/orders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");

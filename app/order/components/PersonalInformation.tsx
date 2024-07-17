@@ -65,7 +65,7 @@ const PersonalInformation = ({
           const eventId = event.id;
 
           const response = await fetch(
-            `http://localhost:8080/api/v1/promo-detail/${userId}/${eventId}`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/promo-detail/${userId}/${eventId}`,
             {
               method: "GET",
               headers: {

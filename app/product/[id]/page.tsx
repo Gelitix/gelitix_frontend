@@ -20,7 +20,7 @@ const Product = ({ params: { id } }: productProps) => {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:8080/api/v1/events/${id}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/${id}`)
         .then((response) => response.json())
         .then((data) => {
           setEvent(data);

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -10,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-// Define the Event type based on your EventDto
 interface Event {
   id: number;
   name: string;
@@ -18,12 +19,12 @@ interface Event {
   location: string;
   organizer: string;
   isFree: boolean;
-  // Add other fields as necessary
 }
 
 const MyEvent: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const { data: session } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -54,10 +55,13 @@ const MyEvent: React.FC = () => {
     fetchEvents();
   }, [session]);
 
+  const handleEventClick = (eventId: number) => {
+    router.push(`/events/${eventId}/edit`);
+  };
+
   return (
     <div className="flex justify-center p-5">
       <div className="w-full max-w-6xl">
-        {" "}
         <Table>
           <TableCaption>A list of your events.</TableCaption>
           <TableHeader>
@@ -72,7 +76,11 @@ const MyEvent: React.FC = () => {
           </TableHeader>
           <TableBody>
             {events.map((event) => (
-              <TableRow key={event.id}>
+              <TableRow
+                key={event.id}
+                onClick={() => handleEventClick(event.id)}
+                className="cursor-pointer hover:bg-gray-100"
+              >
                 <TableCell className="font-medium">{event.id}</TableCell>
                 <TableCell>{event.name}</TableCell>
                 <TableCell>

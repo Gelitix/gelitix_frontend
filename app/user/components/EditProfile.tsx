@@ -13,12 +13,14 @@ import {
 } from "formik";
 import * as Yup from "yup";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const EditProfile = () => {
   const { data: session } = useSession();
   const [notification, setNotification] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [userData, setUserData] = useState<any>(null);
+  const router = useRouter();
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Required"),
@@ -91,6 +93,9 @@ const EditProfile = () => {
       console.log("Success:", data);
       setNotification("Profile updated successfully!");
       fetchUserProfile(); // Refresh user data after update
+      setTimeout(() => {
+        router.push("/user/profile");
+      }, 2000);
     } catch {
       console.error("An error occurred while updating the profile");
       setNotification("Failed to update profile. Please try again.");

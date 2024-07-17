@@ -34,7 +34,10 @@ const Card: React.FC<CardsProps> = ({
   };
 
   return (
-    <section className="mx-[30px] md:mx-0" onClick={handleClick}>
+    <section
+      className="mx-[30px] md:mx-0 transform hover:scale-105 transition duration-300 ease-in-out hover:shadow-lg cursor-pointer"
+      onClick={handleClick}
+    >
       <div className="border rounded-xl shadow-xl">
         <div className="">
           <div className="bg-gray-200 flex justify-center rounded-t-xl">
