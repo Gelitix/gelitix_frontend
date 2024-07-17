@@ -15,6 +15,18 @@ import { Award } from "lucide-react";
 import PersonalInformation from "./PersonalInformation";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
 
 const validationSchema = Yup.object({
   name: Yup.string().min(4, "Please Enter Your Fullname").required("Required"),
@@ -28,7 +40,7 @@ const validationSchema = Yup.object({
     .min(16, "Must be exactly 16 digits")
     .max(16, "Must be exactly 16 digits")
     .required("Required"),
-  ticketType: Yup.string().required("Ticket type is required"),
+  ticketType: Yup.string(),
   ticketAmount: Yup.number()
     .required("Required")
     .min(1, "At least one ticket is required"),
@@ -46,6 +58,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [eventDetails, setEventDetails] = useState<any>(null);
+  const [showThankYou, setShowThankYou] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,15 +109,14 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
     ticketAmount: 1,
   };
 
-  const handleSubmit = async (
-    values: FormikValues,
-    { resetForm }: FormikHelpers<any>
-  ) => {
+  const handleSubmit = async (values: FormikValues) => {
+    console.log({ values });
     if (!session) {
       setNotification("You must be logged in to place an order.");
       return;
     }
-    console.log(values);
+
+    console.log("values");
     const orderData = {
       fullName: values.fullname,
       phoneNumber: values.phoneNumber,
@@ -117,7 +129,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
       promoId: values.promoId,
     };
 
-    console.log(orderData);
+    console.log(JSON.stringify(orderData));
 
     try {
       const response = await fetch(
@@ -134,12 +146,13 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
+      } else {
+        setShowThankYou(true);
       }
 
       const data = await response.json();
       console.log("Success:", data);
       setNotification("Order submitted successfully!");
-      resetForm();
     } catch (error) {
       console.error("Error:", error);
       setNotification("Failed to submit order. Please try again.");
@@ -154,7 +167,10 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
         onSubmit={handleSubmit}
       >
         {(formikProps) => (
-          <Form className="md:grid grid-cols-6 gap-10">
+          <Form
+            onSubmit={formikProps.handleSubmit}
+            className="md:grid grid-cols-6 gap-10"
+          >
             <div className="bg-white block md:hidden px-6 py-6">
               <TotalPrice
                 className="col-span-2 mb-0 md:mb-10 md:hidden"
@@ -182,6 +198,26 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
           {notification}
         </div>
       )}
+
+      <AlertDialog open={showThankYou} onOpenChange={setShowThankYou}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl mb-4">
+              Thank you!
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-md">
+              You have successfully participated in this event. See you soon!
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Link href={"/"}>
+              <AlertDialogAction className="font-semibold text-white text-lg bg-[#007cff] rounded-[6px]">
+                Home
+              </AlertDialogAction>
+            </Link>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

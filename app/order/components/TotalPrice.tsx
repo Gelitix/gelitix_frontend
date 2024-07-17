@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import React from "react";
+import { useEffect } from "react";
 import image1 from "@/public/landingpage/cards-1.webp";
 import Image from "next/image";
 import { Hourglass, TicketX, Zap } from "lucide-react";
@@ -27,13 +27,16 @@ const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
   event,
 }) => {
   const { values } = useFormikContext<FormValues>();
-  // console.log(event);
-  console.log(event);
-  console.log(ticket);
+  console.log(values);
+
   if (!ticket || !event) {
     return <div>Loading ticket details...</div>;
   }
   const descriptionImage = event.imageUrl || "/path/to/default/image.jpg";
+
+  useEffect(() => {
+    console.log("TotalPrice values:", values);
+  }, [values]);
 
   return (
     <div className={className}>
@@ -88,7 +91,8 @@ const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
           <p className="text-xs md:text-sm">Total Payment</p>
           <p className="text-base md:text-xl">
             {formatToIDR(
-              values.ticketAmount * (ticket.price || 0) - values.pointUsed
+              values.ticketAmount * (ticket.price || 0) -
+                (values.pointUsed || 0)
             )}
           </p>
         </div>
