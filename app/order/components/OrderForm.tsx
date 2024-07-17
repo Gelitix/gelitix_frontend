@@ -100,13 +100,20 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
       setNotification("You must be logged in to place an order.");
       return;
     }
-
+    console.log(values);
     const orderData = {
-      ...values,
-      userId: session.user.id,
-      eventId,
-      ticketTypeId,
+      fullName: values.fullname,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      identityCard: values.identityCard,
+      ticketQuantity: values.ticketAmount,
+      eventId: eventId,
+      ticketTypeId: ticketTypeId,
+      pointUsed: values.pointUsed,
+      promoId: values.promoId,
     };
+
+    console.log(orderData);
 
     try {
       const response = await fetch("http://localhost:8080/api/v1/orders", {
@@ -132,14 +139,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
     }
   };
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (status === "unauthenticated") {
-    return <div>You must be logged in to place an order.</div>;
-  }
-
   return (
     <div className="md:px-72 pb-10 md:py-20">
       <Formik
@@ -147,26 +146,29 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        <Form className="md:grid grid-cols-6 gap-10">
-          <div className="bg-white block md:hidden px-6 py-6">
+        {(formikProps) => (
+          <Form className="md:grid grid-cols-6 gap-10">
+            <div className="bg-white block md:hidden px-6 py-6">
+              <TotalPrice
+                className="col-span-2 mb-0 md:mb-10 md:hidden"
+                ticket={ticketDetails}
+                event={eventDetails}
+              />
+            </div>
+
+            <PersonalInformation
+              className="col-span-4"
+              ticket={ticketDetails}
+              event={eventDetails}
+              onSubmit={formikProps.handleSubmit}
+            />
             <TotalPrice
-              className="col-span-2 mb-0 md:mb-10 md:hidden"
+              className="col-span-2 hidden md:block"
               ticket={ticketDetails}
               event={eventDetails}
             />
-          </div>
-
-          <PersonalInformation
-            className="px-6 md:px-0 col-span-4 mt-4 md:mt-0"
-            ticket={ticketDetails}
-            event={eventDetails}
-          />
-          <TotalPrice
-            className="col-span-2 hidden md:block"
-            ticket={ticketDetails}
-            event={eventDetails}
-          />
-        </Form>
+          </Form>
+        )}
       </Formik>
       {notification && (
         <div className="mt-4 p-4 bg-blue-100 text-blue-700 rounded">

@@ -11,12 +11,14 @@ import { TicketType } from "@/app/product/components/PackageCard";
 import { formatTime, formatDate } from "@/app/helpers/dateUtil";
 
 interface FormValues {
-  name: string;
-  phone: string;
+  fullname: string;
+  phoneNumber: string;
   email: string;
   identityCard: string;
   ticketType: string;
   ticketAmount: number;
+  pointUsed: number;
+  promoId?: number;
 }
 
 const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
@@ -85,7 +87,9 @@ const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
         <div className="flex justify-between bg-white p-4 mt-1 rounded-b-2xl font-semibold items-center">
           <p className="text-xs md:text-sm">Total Payment</p>
           <p className="text-base md:text-xl">
-            {formatToIDR(values.ticketAmount * (ticket.price || 0))}
+            {formatToIDR(
+              values.ticketAmount * (ticket.price || 0) - values.pointUsed
+            )}
           </p>
         </div>
       </div>

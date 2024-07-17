@@ -33,6 +33,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useSession } from "next-auth/react";
+import { profile } from "console";
 
 interface PromoDetails {
   name: string;
@@ -41,20 +42,61 @@ interface PromoDetails {
   endValid: string;
 }
 
-const PersonalInformation = ({
+interface ProfileData {
+  pointBalance: number;
+  name?: string;
+  email?: string;
+}
+
+interface PersonalInformationProps {
+  className: string;
+  ticket: any; // Consider creating a more specific type for ticket
+  event: any; // Consider creating a more specific type for event
+  onSubmit: () => void;
+}
+
+const PersonalInformation: React.FC<PersonalInformationProps> = ({
   className,
   ticket,
   event,
-}: {
-  className: string;
-  ticket: any;
-  event: any;
+  onSubmit,
 }) => {
+  const { handleSubmit } = useFormikContext();
   const { data: session, status } = useSession();
   const [promoDetails, setPromoDetails] = useState<PromoDetails[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { isSubmitting, values, setFieldValue, initialValues, handleSubmit } =
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [pointUsed, setPointUsed] = useState<number>(0);
+  const { isSubmitting, values, setFieldValue, initialValues } =
     useFormikContext<FormikValues>();
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (session && session.accessToken) {
+        try {
+          const response = await fetch(
+            "http://localhost:8080/api/v1/user/profile",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.accessToken}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setProfileData(data.data);
+        } catch (error) {
+          console.error("Error fetching profile data:", error);
+        }
+      }
+    };
+
+    fetchProfileData();
+  }, [session]);
 
   useEffect(() => {
     const fetchPromoDetails = async () => {
@@ -90,22 +132,6 @@ const PersonalInformation = ({
     console.log(promoDetails);
     fetchPromoDetails();
   }, [event, session]);
-
-  const onSubmit = (values: FormikValues, actions: FormikHelpers<any>) => {
-    if (session) {
-      const orderData = {
-        ...values,
-        userId: session.user.id,
-        // other order details...
-      };
-
-      // Submit order with orderData
-      handleSubmit();
-    } else {
-      // Handle case where user is not logged in
-      console.error("User not logged in");
-    }
-  };
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -314,77 +340,9 @@ const PersonalInformation = ({
                 type="submit"
                 disabled={isSubmitting}
                 className="bg-[#007cff] text-white py-2 md:py-2 px-3 md:px-4   rounded font-semibold disabled:bg-gray-300 text-[11px] md:text-sm"
-                onClick={() =>
-                  onSubmit(values, {
-                    setSubmitting: () => {},
-                    setStatus: function (status?: any): void {
-                      throw new Error("Function not implemented.");
-                    },
-                    setErrors: function (errors: FormikErrors<any>): void {
-                      throw new Error("Function not implemented.");
-                    },
-                    setTouched: function (
-                      touched: FormikTouched<any>,
-                      shouldValidate?: boolean
-                    ): Promise<void | FormikErrors<any>> {
-                      throw new Error("Function not implemented.");
-                    },
-                    setValues: function (
-                      values: any,
-                      shouldValidate?: boolean
-                    ): Promise<void | FormikErrors<any>> {
-                      throw new Error("Function not implemented.");
-                    },
-                    setFieldValue: function (
-                      field: string,
-                      value: any,
-                      shouldValidate?: boolean
-                    ): Promise<void | FormikErrors<any>> {
-                      throw new Error("Function not implemented.");
-                    },
-                    setFieldError: function (
-                      field: string,
-                      message: string | undefined
-                    ): void {
-                      throw new Error("Function not implemented.");
-                    },
-                    setFieldTouched: function (
-                      field: string,
-                      isTouched?: boolean,
-                      shouldValidate?: boolean
-                    ): Promise<void | FormikErrors<any>> {
-                      throw new Error("Function not implemented.");
-                    },
-                    validateForm: function (
-                      values?: any
-                    ): Promise<FormikErrors<any>> {
-                      throw new Error("Function not implemented.");
-                    },
-                    validateField: function (
-                      field: string
-                    ): Promise<void> | Promise<string | undefined> {
-                      throw new Error("Function not implemented.");
-                    },
-                    resetForm: function (
-                      nextState?: Partial<FormikState<any>> | undefined
-                    ): void {
-                      throw new Error("Function not implemented.");
-                    },
-                    submitForm: function (): Promise<void> {
-                      throw new Error("Function not implemented.");
-                    },
-                    setFormikState: function (
-                      f:
-                        | FormikState<any>
-                        | ((prevState: FormikState<any>) => FormikState<any>),
-                      cb?: () => void
-                    ): void {
-                      throw new Error("Function not implemented.");
-                    },
-                  })
-                }
+                onClick={onSubmit}
               >
-                {isSubmitting ? "Submitting..." : "Continue to payment"}
+                Book Now
               </button>
             </div>
           </div>
@@ -440,6 +398,41 @@ const PersonalInformation = ({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+
+      <div
+        className="border-[1px] border-gray-400 p-6 px-8 rounded-3xl mb-10 bg-white mt-16 "
+        style={{ boxShadow: "0 0 20px 0 rgba(48, 49, 53, .16)" }}
+      >
+        {profileData ? (
+          // Display profile data
+          <div className="flex justify-between">
+            <p className="text-xl font-semibold">
+              {" "}
+              Point Balance: {profileData.pointBalance}
+            </p>
+
+            <div className="flex gap-3">
+              {" "}
+              <input
+                type="number"
+                max={profileData.pointBalance}
+                min={0}
+                placeholder="Insert points here"
+                className="w-44"
+                onChange={(e) => setPointUsed(Number(e.target.value))}
+              />
+              <button
+                className="bg-[#007cff] text-white font-semibold p-2 px-4 rounded-[10px]"
+                onClick={() => setFieldValue("pointUsed", pointUsed)}
+              >
+                Apply Points
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p>Loading point balance...</p>
+        )}{" "}
+      </div>
     </div>
   );
 };
