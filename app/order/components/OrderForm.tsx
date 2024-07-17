@@ -14,6 +14,7 @@ import TotalPrice from "./TotalPrice";
 import { Award } from "lucide-react";
 import PersonalInformation from "./PersonalInformation";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const validationSchema = Yup.object({
   name: Yup.string().min(4, "Please Enter Your Fullname").required("Required"),
@@ -39,13 +40,12 @@ interface OrderFormProps {
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
+  const { data: session, status } = useSession();
   const [notification, setNotification] = useState<string | null>(null);
   const [ticketDetails, setTicketDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [eventDetails, setEventDetails] = useState<any>(null);
-
-  console.log(ticketTypeId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +68,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
           console.log(ticketData);
           console.log(eventData);
           setTicketDetails(ticketData.data);
-          setEventDetails(eventData); // Assuming you have a state for event details
+          setEventDetails(eventData);
           setIsLoading(false);
         } catch (error) {
           console.error("Error:", error);
@@ -92,38 +92,56 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
     ticketAmount: 1,
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: FormikValues,
     { resetForm }: FormikHelpers<any>
   ) => {
-    fetch("http://localhost:8080/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Success:", data);
-        setNotification("Form submitted successfully!");
-        resetForm();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setNotification("Failed to submit form. Please try again.");
+    if (!session) {
+      setNotification("You must be logged in to place an order.");
+      return;
+    }
+
+    const orderData = {
+      ...values,
+      userId: session.user.id,
+      eventId,
+      ticketTypeId,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify(orderData),
       });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Success:", data);
+      setNotification("Order submitted successfully!");
+      resetForm();
+    } catch (error) {
+      console.error("Error:", error);
+      setNotification("Failed to submit order. Please try again.");
+    }
   };
-  // const ticket = ticketDetails.data;
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    return <div>You must be logged in to place an order.</div>;
+  }
 
   return (
-    <div className=" md:px-72 pb-10 md:py-20">
-      {" "}
+    <div className="md:px-72 pb-10 md:py-20">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -131,9 +149,8 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
       >
         <Form className="md:grid grid-cols-6 gap-10">
           <div className="bg-white block md:hidden px-6 py-6">
-            {" "}
             <TotalPrice
-              className="col-span-2  mb-0 md:mb-10 md:hidden"
+              className="col-span-2 mb-0 md:mb-10 md:hidden"
               ticket={ticketDetails}
               event={eventDetails}
             />
@@ -151,6 +168,11 @@ const OrderForm: React.FC<OrderFormProps> = ({ eventId, ticketTypeId }) => {
           />
         </Form>
       </Formik>
+      {notification && (
+        <div className="mt-4 p-4 bg-blue-100 text-blue-700 rounded">
+          {notification}
+        </div>
+      )}
     </div>
   );
 };

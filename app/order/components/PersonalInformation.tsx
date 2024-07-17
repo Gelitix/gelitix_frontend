@@ -12,6 +12,9 @@ import {
   ErrorMessage,
   FormikHelpers,
   useFormikContext,
+  FormikErrors,
+  FormikState,
+  FormikTouched,
 } from "formik";
 import * as Yup from "yup";
 import { formatToIDR } from "@/lib/formatToIDR";
@@ -29,6 +32,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useSession } from "next-auth/react";
 
 interface PromoDetails {
   name: string;
@@ -46,17 +50,18 @@ const PersonalInformation = ({
   ticket: any;
   event: any;
 }) => {
-  // const [notification, setNotification] = useState<string | null>(null);
-  const [promoDetails, setPromoDetails] = useState<PromoDetails | null>(null);
+  const { data: session, status } = useSession();
+  const [promoDetails, setPromoDetails] = useState<PromoDetails[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { isSubmitting, values, setFieldValue, initialValues } =
+  const { isSubmitting, values, setFieldValue, initialValues, handleSubmit } =
     useFormikContext<FormikValues>();
 
   useEffect(() => {
     const fetchPromoDetails = async () => {
-      if (event && event.id) {
+      if (event && event.id && session) {
         try {
-          const userId = 1;
+          const userId = session.user.id;
+          console.log(userId);
           const eventId = event.id;
 
           const response = await fetch(
@@ -65,6 +70,7 @@ const PersonalInformation = ({
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session.accessToken}`,
               },
             }
           );
@@ -74,7 +80,7 @@ const PersonalInformation = ({
           }
           const data: PromoDetails = await response.json();
           console.log(data);
-          setPromoDetails(data);
+          setPromoDetails(data as unknown as PromoDetails[]);
           console.log(promoDetails);
         } catch (error) {
           console.error("Error fetching promo details:", error);
@@ -83,7 +89,32 @@ const PersonalInformation = ({
     };
     console.log(promoDetails);
     fetchPromoDetails();
-  }, [event]);
+  }, [event, session]);
+
+  const onSubmit = (values: FormikValues, actions: FormikHelpers<any>) => {
+    if (session) {
+      const orderData = {
+        ...values,
+        userId: session.user.id,
+        // other order details...
+      };
+
+      // Submit order with orderData
+      handleSubmit();
+    } else {
+      // Handle case where user is not logged in
+      console.error("User not logged in");
+    }
+  };
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    return <div>You must be logged in to view this page.</div>;
+  }
+
   if (!ticket || typeof ticket.price === "undefined") {
     return <div>Loading ticket details...</div>;
   }
@@ -104,7 +135,6 @@ const PersonalInformation = ({
           style={{ boxShadow: "0 0 20px 0 rgba(48, 49, 53, .16)" }}
         >
           <div>
-            {" "}
             <div className="gap-5 flex flex-col">
               <div className="flex gap-5 md:gap-20 ">
                 <div>Personal information</div>
@@ -195,8 +225,6 @@ const PersonalInformation = ({
               </div>
             </div>
           </div>
-
-          {/* {notification && <p>{notification}</p>} */}
         </div>
 
         <h2 className="font-semibold text-lg md:text-2xl mb-1 md:mb-2">
@@ -212,7 +240,6 @@ const PersonalInformation = ({
           <div className="bg-gradient-to-r from-[#18dc9b] to-[#6e54ef] p-2 md:p-4 text-white text-[10px] md:text-sm font-normal md:justify-center flex items-center gap-2 rounded-t-2xl">
             <Award></Award>
             <p>
-              {" "}
               You&#39;re one step closer to get{" "}
               <span className="font-semibold">Lowest Price Guarantee</span>
             </p>
@@ -223,7 +250,6 @@ const PersonalInformation = ({
               Ticket quantity
             </h2>
             <div className="">
-              {" "}
               <div className="flex items-center justify-between p-3 md:p-4 border-[1px] border-gray-400 rounded-xl">
                 <p className="text-xs md:text-sm font-semibold">Pax</p>
                 <div className="flex gap-2 md:gap-8 font-semibold text-gray-500">
@@ -273,7 +299,6 @@ const PersonalInformation = ({
                 : "Total not available"}
             </p>
             <div>
-              {" "}
               <ErrorMessage
                 name="ticketAmount"
                 component="div"
@@ -289,6 +314,75 @@ const PersonalInformation = ({
                 type="submit"
                 disabled={isSubmitting}
                 className="bg-[#007cff] text-white py-2 md:py-2 px-3 md:px-4   rounded font-semibold disabled:bg-gray-300 text-[11px] md:text-sm"
+                onClick={() =>
+                  onSubmit(values, {
+                    setSubmitting: () => {},
+                    setStatus: function (status?: any): void {
+                      throw new Error("Function not implemented.");
+                    },
+                    setErrors: function (errors: FormikErrors<any>): void {
+                      throw new Error("Function not implemented.");
+                    },
+                    setTouched: function (
+                      touched: FormikTouched<any>,
+                      shouldValidate?: boolean
+                    ): Promise<void | FormikErrors<any>> {
+                      throw new Error("Function not implemented.");
+                    },
+                    setValues: function (
+                      values: any,
+                      shouldValidate?: boolean
+                    ): Promise<void | FormikErrors<any>> {
+                      throw new Error("Function not implemented.");
+                    },
+                    setFieldValue: function (
+                      field: string,
+                      value: any,
+                      shouldValidate?: boolean
+                    ): Promise<void | FormikErrors<any>> {
+                      throw new Error("Function not implemented.");
+                    },
+                    setFieldError: function (
+                      field: string,
+                      message: string | undefined
+                    ): void {
+                      throw new Error("Function not implemented.");
+                    },
+                    setFieldTouched: function (
+                      field: string,
+                      isTouched?: boolean,
+                      shouldValidate?: boolean
+                    ): Promise<void | FormikErrors<any>> {
+                      throw new Error("Function not implemented.");
+                    },
+                    validateForm: function (
+                      values?: any
+                    ): Promise<FormikErrors<any>> {
+                      throw new Error("Function not implemented.");
+                    },
+                    validateField: function (
+                      field: string
+                    ): Promise<void> | Promise<string | undefined> {
+                      throw new Error("Function not implemented.");
+                    },
+                    resetForm: function (
+                      nextState?: Partial<FormikState<any>> | undefined
+                    ): void {
+                      throw new Error("Function not implemented.");
+                    },
+                    submitForm: function (): Promise<void> {
+                      throw new Error("Function not implemented.");
+                    },
+                    setFormikState: function (
+                      f:
+                        | FormikState<any>
+                        | ((prevState: FormikState<any>) => FormikState<any>),
+                      cb?: () => void
+                    ): void {
+                      throw new Error("Function not implemented.");
+                    },
+                  })
+                }
               >
                 {isSubmitting ? "Submitting..." : "Continue to payment"}
               </button>
@@ -302,14 +396,13 @@ const PersonalInformation = ({
           <DrawerHeader>
             <DrawerTitle className="text-3xl mb-5">Promo </DrawerTitle>
             <DrawerDescription>
-              {promoDetails && promoDetails.data ? (
+              {promoDetails ? (
                 promoDetails.data.map((promo: PromoDetails, index: number) => (
                   <div
                     className="text-lg flex items-center justify-between"
                     key={index}
                   >
                     <div className="flex gap-24 items-center">
-                      {" "}
                       <div className="flex gap-5">
                         <TicketPercent size={40} />
                         <div className="flex gap-10 items-center">
