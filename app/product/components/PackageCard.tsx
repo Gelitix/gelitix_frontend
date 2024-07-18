@@ -49,7 +49,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ eventId, ticket }) => {
 
             <div className="flex justify-between items-center p-5">
               <div className="flex justify-between gap-3">
-                <p className="font-semibold">Ticket's left:</p>
+                <p className="font-semibold">Tickets left:</p>
                 <p className="text-blue-600 font-bold ">{ticket.quantity}</p>
               </div>
 
