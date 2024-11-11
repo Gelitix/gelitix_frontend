@@ -29,14 +29,14 @@ const TotalPrice: React.FC<{ className?: string; ticket: any; event: any }> = ({
   const { values } = useFormikContext<FormValues>();
   console.log(values);
 
+  useEffect(() => {
+    console.log("TotalPrice values:", values);
+  }, [values]);
+
   if (!ticket || !event) {
     return <div>Loading ticket details...</div>;
   }
   const descriptionImage = event.imageUrl || "/path/to/default/image.jpg";
-
-  useEffect(() => {
-    console.log("TotalPrice values:", values);
-  }, [values]);
 
   return (
     <div className={className}>
